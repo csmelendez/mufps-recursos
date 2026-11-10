@@ -26,3 +26,9 @@ Para publicarlo con GitHub Pages: *Settings → Pages → Deploy from a branch*,
 ## Vigencia
 
 Normativa comprobada a octubre de 2026. Las páginas resumen la normativa con fines didácticos y no sustituyen la consulta del BOE ni del DOCM.
+
+## Licencia
+
+© 2026 César Sánchez Meléndez.
+
+Este material se publica con licencia [Creative Commons Atribución-CompartirIgual 4.0 Internacional (CC BY-SA 4.0)](https://creativecommons.org/licenses/by-sa/4.0/deed.es). Puedes copiarlo, adaptarlo y redistribuirlo citando la autoría y compartiendo tus versiones con la misma licencia.
