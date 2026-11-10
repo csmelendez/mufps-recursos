@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¿Sigue valiendo?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --granate:#A3002F; --granate-claro:#F7E4E9;
+  --estado:#35577A; --estado-claro:#E3EBF3;
+  --clm:#B4621B; --clm-claro:#FBF1E7;
+  --verde:#25695C; --verde-claro:#E1EFEB;
+  --rojo:#B3261E; --rojo-claro:#FBE9E7;
+  --tinta:#2A2125; --gris:#6C6266; --linea:#DED6D9; --papel:#FFFFFF; --fondo:#F6F3F4;
+  --f-disp:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;
+  --f-cuerpo:"IBM Plex Sans",Arial,Helvetica,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--fondo);color:var(--tinta);font-family:var(--f-cuerpo);display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:20px;padding:12px 24px;background:var(--papel);border-bottom:1px solid var(--linea);flex-wrap:wrap}
+.volver{font:600 13px var(--f-cuerpo);color:var(--granate);text-decoration:none;border:1px solid var(--granate);border-radius:999px;padding:4px 11px}
+.volver:hover{background:var(--granate);color:#fff}
+.marca{font-family:var(--f-disp);font-weight:700;color:var(--granate);font-size:15px;letter-spacing:.02em}
+.marca span{color:var(--gris);font-weight:500}
+nav.puntos{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+nav.puntos button{font:500 13px var(--f-cuerpo);border:1px solid var(--linea);background:var(--papel);color:var(--gris);border-radius:999px;padding:5px 11px;cursor:pointer}
+nav.puntos button[aria-current="step"]{background:var(--granate);border-color:var(--granate);color:#fff}
+button:focus-visible{outline:3px solid var(--clm);outline-offset:2px}
+main{flex:1;display:grid;grid-template-columns:minmax(280px,360px) 1fr;min-height:0}
+aside{padding:28px 26px 20px;display:flex;flex-direction:column;gap:12px;background:var(--papel);border-right:1px solid var(--linea);overflow:auto}
+.num{font-family:var(--f-disp);font-weight:600;color:var(--granate);font-size:15px;letter-spacing:.06em;text-transform:uppercase}
+aside h1{font-family:var(--f-disp);font-weight:700;font-size:38px;line-height:1.04;margin:0;text-wrap:balance}
+.pregunta{font-size:19px;font-style:italic;color:var(--granate);margin:0}
+.cuerpo{font-size:16px;line-height:1.55;margin:0;max-width:62ch}
+.fuente{font-size:12.5px;color:var(--gris);margin-top:auto;border-top:1px solid var(--linea);padding-top:10px;line-height:1.45}
+.ctl{display:flex;gap:8px;align-items:center}
+.ctl button{font:600 14px var(--f-cuerpo);border:1px solid var(--granate);background:var(--papel);color:var(--granate);border-radius:6px;padding:8px 14px;cursor:pointer}
+.ctl button.prim{background:var(--granate);color:#fff}
+.ctl button:disabled{opacity:.35;cursor:default}
+.marco{position:relative;min-height:0;overflow:hidden}
+.stage{position:absolute;left:0;top:0;width:1000px;height:640px;transform-origin:0 0}
+.obj{position:absolute;left:0;top:0;width:1000px;height:640px;opacity:0;pointer-events:none;transition:opacity 500ms ease}
+.obj.on{opacity:1;pointer-events:auto}
+.bt{font:600 13.5px var(--f-cuerpo);border:1px solid var(--granate);background:var(--papel);color:var(--granate);border-radius:6px;padding:6px 12px;cursor:pointer}
+.bt.prim{background:var(--granate);color:#fff}
+.bt.ok{background:var(--verde);border-color:var(--verde);color:#fff}
+.bt.mal{background:var(--rojo);border-color:var(--rojo);color:#fff}
+.bt:disabled{cursor:default}
+.res b.ok{color:var(--verde)} .res b.mal{color:var(--rojo)}
+@media (max-width:900px){
+  main{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  aside{border-right:0;border-bottom:1px solid var(--linea);padding:18px 16px}
+  aside h1{font-size:30px}
+  .marco{min-height:62vw}
+  header{padding:10px 16px}
+}
+@media (prefers-reduced-motion:reduce){*{transition-duration:1ms !important;animation:none !important}}
+
+
+/* Escena 0: seis formas */
+.formas{position:absolute;left:30px;top:24px;width:940px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.forma{background:var(--papel);border:1px solid var(--linea);border-radius:10px;padding:14px 16px;border-top:5px solid var(--granate);min-height:186px}
+.forma h3{margin:0 0 6px;font:700 19px var(--f-disp)}
+.forma p{margin:0 0 8px;font-size:14px;line-height:1.45}
+.forma .ej{font-size:13px;color:var(--gris);border-top:1px dashed var(--linea);padding-top:7px}
+.forma:nth-child(3){border-top-color:var(--estado)} .forma:nth-child(4){border-top-color:var(--clm)}
+.nota0{position:absolute;left:30px;top:442px;width:940px;background:var(--papel);border-left:5px solid var(--granate);border-radius:6px;padding:12px 16px;font-size:15px;line-height:1.5}
+/* Escena 1: ocho citas */
+.cita{position:absolute;left:30px;top:24px;width:590px;background:var(--papel);border:1px solid var(--linea);border-radius:12px;padding:18px 20px;box-shadow:0 10px 26px rgba(60,20,30,.08)}
+.cita .n{font:600 12px var(--f-cuerpo);letter-spacing:.08em;text-transform:uppercase;color:var(--gris)}
+.cita .q{font:600 19px/1.35 var(--f-cuerpo);margin:8px 0 14px}
+.cita .q::before{content:"«"} .cita .q::after{content:"»"}
+.ops{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.ops .bt{text-align:left;padding:9px 12px}
+.cita .res{margin-top:12px;font-size:14.5px;line-height:1.5;min-height:66px}
+.lista{position:absolute;left:640px;top:24px;width:330px;background:var(--papel);border:1px solid var(--linea);border-radius:12px;padding:12px 14px}
+.lista h3{margin:0 0 6px;font:700 17px var(--f-disp)}
+.li{display:grid;grid-template-columns:22px 1fr;gap:8px;padding:7px 0;border-bottom:1px solid var(--linea);font-size:13px;line-height:1.35}
+.li:last-child{border-bottom:0}
+.li .k{font:700 13px var(--f-disp);color:var(--gris)}
+.li .st{display:inline-block;margin-top:3px;font:600 11.5px var(--f-cuerpo);border-radius:999px;padding:2px 8px;color:#fff;background:var(--gris)}
+.li.act{background:var(--granate-claro);margin:0 -14px;padding-left:14px;padding-right:14px}
+.sintesis{position:absolute;left:30px;top:470px;width:590px;padding:12px 16px;border-radius:8px;background:var(--verde-claro);border-left:5px solid var(--verde);font-size:14.5px;line-height:1.5;opacity:0;transition:opacity 500ms}
+.sintesis.on{opacity:1}
+/* Escena 2: dos ordenaciones */
+.rej{position:absolute;left:30px;top:30px;width:940px;display:grid;grid-template-columns:120px repeat(4,1fr);gap:8px}
+.rej .h{font:700 16px var(--f-disp);text-align:center;padding:6px 0;color:var(--tinta)}
+.rej .r{font:700 16px var(--f-disp);display:flex;align-items:center;color:var(--tinta)}
+.celda{border-radius:8px;border:1px solid;min-height:94px;padding:10px 12px;font-size:13.5px;line-height:1.4;text-align:left;cursor:pointer;font-family:var(--f-cuerpo);color:var(--tinta)}
+.celda b{display:block;font:700 15px var(--f-disp);margin-bottom:3px}
+.celda.ant{background:#EEEAEC;border-color:#D3CBCF}
+.celda.nue{background:var(--verde-claro);border-color:#A9CFC4}
+.celda.na{background:transparent;border:1px dashed #D3CBCF;color:var(--gris);cursor:default}
+.celda.sel{box-shadow:0 0 0 3px var(--granate)}
+.leyenda{position:absolute;left:30px;top:372px;display:flex;gap:18px;font-size:13.5px;color:var(--gris)}
+.leyenda i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px}
+.det{position:absolute;left:30px;top:408px;width:940px;background:var(--papel);border:1px solid var(--linea);border-radius:10px;padding:14px 18px;font-size:14.5px;line-height:1.5;min-height:150px}
+.det h3{margin:0 0 6px;font:700 18px var(--f-disp)}
+/* Escena 3: qué redacción */
+.eje{position:absolute;left:60px;top:60px;width:880px;height:120px}
+.eje .lin{position:absolute;left:0;right:0;top:56px;height:6px;border-radius:3px;background:linear-gradient(90deg,#CFC6CA 0 var(--corte),var(--verde) var(--corte) 100%)}
+.hito{position:absolute;top:24px;transform:translateX(-50%);text-align:center;font-size:12.5px;line-height:1.3;width:170px}
+.hito::after{content:"";position:absolute;left:50%;top:30px;width:2px;height:22px;background:var(--tinta);transform:translateX(-50%)}
+.hito b{font:700 13px var(--f-disp)}
+.cursor{position:absolute;top:46px;width:26px;height:26px;border-radius:50%;background:var(--granate);border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.25);transform:translateX(-50%);transition:left 300ms}
+.fechas{position:absolute;left:60px;top:196px;width:880px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:14px}
+.precs{position:absolute;left:60px;top:250px;width:880px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:14px}
+.fechas .bt[aria-pressed="true"],.precs .bt[aria-pressed="true"]{background:var(--granate);color:#fff}
+.texto{position:absolute;left:60px;top:304px;width:880px;background:var(--papel);border:1px solid var(--linea);border-radius:10px;padding:16px 20px;min-height:250px;font-size:15px;line-height:1.55}
+.texto .ver{display:inline-block;font:600 12.5px var(--f-cuerpo);border-radius:999px;padding:3px 10px;color:#fff;margin-bottom:8px}
+.texto h3{margin:0 0 6px;font:700 19px var(--f-disp)}
+/* Escena 4: protocolo */
+.pasos{position:absolute;left:30px;top:24px;width:330px;display:flex;flex-direction:column;gap:8px}
+.paso{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:center;text-align:left;background:var(--papel);border:1px solid var(--linea);border-radius:10px;padding:10px 12px;cursor:pointer;font:600 14.5px var(--f-cuerpo);color:var(--tinta)}
+.paso i{font-style:normal;width:30px;height:30px;border-radius:50%;background:var(--fondo);display:grid;place-items:center;font:700 15px var(--f-disp);color:var(--granate);border:1px solid var(--linea)}
+.paso[aria-pressed="true"]{border-color:var(--granate);box-shadow:0 0 0 2px var(--granate)}
+.paso[aria-pressed="true"] i{background:var(--granate);color:#fff;border-color:var(--granate)}
+.paso.hecho i{background:var(--verde);color:#fff;border-color:var(--verde)}
+.detp{position:absolute;left:380px;top:24px;width:590px;min-height:440px;background:var(--papel);border:1px solid var(--linea);border-radius:12px;padding:18px 22px;font-size:15px;line-height:1.55}
+.detp h3{margin:0 0 4px;font:700 22px var(--f-disp)}
+.detp .q{font-style:italic;color:var(--granate);margin:0 0 10px}
+.detp .caso{margin-top:12px;background:var(--fondo);border-radius:8px;padding:10px 14px;font-size:14.5px}
+.detp .caso b{color:var(--granate)}
+.detp .ojo{margin-top:12px;background:var(--clm-claro);border-left:4px solid var(--clm);border-radius:6px;padding:9px 13px;font-size:14px}
+.fin4{position:absolute;left:30px;top:500px;width:940px;padding:12px 16px;border-radius:8px;background:var(--verde-claro);border-left:5px solid var(--verde);font-size:15px;line-height:1.5}
+
+</style>
+</head>
+<body data-s="0">
+<header>
+  <a class="volver" href="../../index.html">← Colección</a>
+  <div class="marca">Tema 4 · ¿Sigue valiendo? <span>· Caso guía: Técnico en Vídeo Disc-jockey y Sonido</span></div>
+  <nav class="puntos" aria-label="Escenas"></nav>
+</header>
+<main>
+  <aside aria-live="polite">
+    <div class="num" id="num"></div>
+    <h1 id="tit"></h1>
+    <p class="pregunta" id="preg"></p>
+    <p class="cuerpo" id="cuerpo"></p>
+    <div class="ctl">
+      <button type="button" id="ant">← Anterior</button>
+      <button type="button" id="sig" class="prim">Siguiente →</button>
+    </div>
+    <div class="fuente" id="fuente"></div>
+  </aside>
+  <div class="marco" id="marco">
+    <div class="stage" id="stage">
+
+      <div class="obj" data-e="0">
+        <div class="formas">
+          <div class="forma"><h3>Derogación expresa</h3><p>Una norma posterior la deja sin efecto y lo dice.</p><div class="ej">RD 1147/2011, marcado como derogado en el BOE.</div></div>
+          <div class="forma"><h3>Modificación</h3><p>Una norma posterior cambia su redacción; el texto original ya no es el aplicable.</p><div class="ej">Decreto 100/2014, modificado por el Decreto 79/2024.</div></div>
+          <div class="forma"><h3>Contradice una norma superior</h3><p>Sigue publicada, pero choca con una norma de rango superior del mismo ordenamiento (jerarquía).</p><div class="ej">Art. 13.2 del RD 556/2012 frente al art. 41.3.b) de la LOE.</div></div>
+          <div class="forma"><h3>Desplazada por prevalencia</h3><p>Una norma autonómica choca con la regulación básica estatal en una materia que no es exclusiva de la comunidad. No es cuestión de rango.</p><div class="ej">Art. 70.3 de la Ley 7/2010 frente a la LO 3/2022 y el RD 659/2023.</div></div>
+          <div class="forma"><h3>Pérdida de objeto</h3><p>Regula algo que ya no existe.</p><div class="ej">Art. 14 del RD 556/2012: convalidaciones de módulos suprimidos.</div></div>
+          <div class="forma"><h3>Terminología superada</h3><p>La regla sigue valiendo, pero sus términos han cambiado de nombre.</p><div class="ej">«Unidad de competencia» por «estándar de competencias profesionales».</div></div>
+        </div>
+        <div class="nota0"><b>Cada situación se resuelve con algo distinto.</b> La derogación y la modificación, con la norma posterior. La contradicción, con la norma superior del mismo ordenamiento. La prevalencia, con la norma básica estatal. La pérdida de objeto, comprobando que lo regulado ya no existe. La terminología, traduciendo el término. Por eso conviene nombrar bien la situación antes de decidir qué texto se aplica.</div>
+      </div>
+
+      <div class="obj" data-e="1">
+        <div class="cita">
+          <div class="n" id="cN"></div>
+          <div class="q" id="cQ"></div>
+          <div class="ops" id="cOps"></div>
+          <div class="res" id="cRes"></div>
+        </div>
+        <div class="lista"><h3>La programación de 2023-2024</h3><div id="cLista"></div></div>
+        <div class="sintesis" id="cSin"><b>De ocho citas, solo dos normas siguen siendo la base, y las dos deben leerse con su modificación.</b> Ninguna cita era falsa cuando se escribió: la programación no estaba mal hecha, estaba envejecida.</div>
+      </div>
+
+      <div class="obj" data-e="2">
+        <div class="rej" id="rej"></div>
+        <div class="leyenda"><span><i style="background:#EEEAEC;border:1px solid #D3CBCF"></i>Ordenación anterior</span><span><i style="background:var(--verde-claro);border:1px solid #A9CFC4"></i>Currículo modificado por el Decreto 79/2024</span><span><i style="border:1px dashed #D3CBCF"></i>Solo donde el ciclo se ofrece en tres cursos</span></div>
+        <div class="det" id="det"></div>
+      </div>
+
+      <div class="obj" data-e="3">
+        <div class="eje" id="eje" style="--corte:73%">
+          <div class="lin"></div>
+          <div class="hito" style="left:0%"><b>3 dic. 2024</b><br>DOCM: Orden 201/2024</div>
+          <div class="hito" style="left:73%"><b>29 abr. 2026</b><br>En vigor la Orden 55/2026</div>
+          <div class="hito" style="left:100%"><b>Hoy</b><br>noviembre de 2026</div>
+          <div class="cursor" id="cur" style="left:30%"></div>
+        </div>
+        <div class="fechas" id="fechas"><span style="color:var(--gris);margin-right:4px">Fecha de la decisión:</span></div>
+        <div class="precs" id="precs"><span style="color:var(--gris);margin-right:4px">Precepto:</span></div>
+        <div class="texto" id="texto"></div>
+      </div>
+
+      <div class="obj" data-e="4">
+        <div class="pasos" id="pasos"></div>
+        <div class="detp" id="detp"></div>
+        <div class="fin4">Resultado en el caso guía: dos identificadores oficiales, el del RD 556/2012 y el del Decreto 100/2014, cada uno leído con su modificación y anotado con la fecha de consulta. Son los que pasan al expediente normativo.</div>
+      </div>
+
+    </div>
+  </div>
+</main>
+<script>
+(function(){
+  var ESC=[
+  {t:"Publicada no es aplicable",p:"¿Puede una norma seguir en el boletín y no aplicarse?",c:"Sí, y de seis maneras distintas. Conviene distinguirlas porque cada una se resuelve de forma diferente: con otra norma, con el texto consolidado, con la norma superior, con la estatal o con una simple traducción de términos.",f:"Tema 4, tabla «Seis formas de que una regla publicada ya no se aplique»; Constitución, arts. 9.3 y 149.3; Código Civil, art. 2."},
+  {t:"Las ocho citas del caso guía",p:"¿Qué normas de la programación heredada siguen valiendo?",c:"Es la auditoría con la que se cierra la sesión 2. Para cada cita, elige qué le ha pasado. Úsala después de la actividad 2, no antes: los equipos deben llegar a estas situaciones con sus propios títulos.",f:"Tema 4, auditoría de la programación heredada; RD 659/2023; RD 499/2024; Decreto 79/2024; LOE, art. 41.3.b); RD 532/2025; Ley 7/2010, art. 70.3."},
+  {t:"Dos ordenaciones a la vez",p:"¿Qué currículo sigue un estudiante en cada curso?",c:"El Decreto 79/2024 entró en vigor al día siguiente de publicarse, pero se aplicó curso a curso. En 2024-2025 convivieron en el mismo ciclo dos ordenaciones: primero ya con el currículo modificado, segundo terminando con el anterior. Pulsa cada casilla.",f:"Decreto 79/2024 de Castilla-La Mancha, aplicación por cursos; Tema 4, «Implantación por cursos»."},
+  {t:"¿Qué redacción se aplica?",p:"La Orden 201/2024 de 2026 no es la de 2024",c:"La Orden 55/2026 modificó la orden de evaluación. Elige una fecha y un precepto: la página te dice qué texto rige ese día. Es el mejor ejemplo de por qué una norma de 2024 no puede leerse sola en 2026.",f:"Orden 201/2024 (DOCM de 3 de diciembre de 2024); Orden 55/2026 (DOCM de 28 de abril de 2026, en vigor el día siguiente)."},
+  {t:"Protocolo en cinco pasos",p:"¿Cómo se comprueba qué texto rige hoy?",c:"El mismo procedimiento sirve para cualquier norma. Aquí se aplica al real decreto del título del caso guía, entrando por TodoFP, que localiza la norma pero no la sustituye.",f:"Tema 4, «Protocolo de comprobación en cinco pasos» y «TodoFP: la puerta de entrada, no la fuente»; Código Civil, art. 2.1."}
+];
+  var $=function(i){return document.getElementById(i)};
+
+  // ---- Escena 1: citas
+  var SIT=["Derogación expresa","Modificación","Contradice una norma superior","Desplazada por prevalencia","Pérdida de objeto","Terminología superada"];
+  var CIT=[
+    {q:"Base normativa: Real Decreto 1147/2011, de ordenación general de la Formación Profesional.",ok:0,x:"Lo derogó el RD 659/2023 (disposición derogatoria única, apartado 2), y el BOE lo marca como «disposición derogada». Se sustituye por el RD 659/2023."},
+    {q:"Título: Real Decreto 556/2012.",ok:1,x:"Sigue vigente, pero modificado por el RD 499/2024. Se lee en el texto consolidado, comprobando en «Análisis» que recoge esa modificación."},
+    {q:"Currículo: Decreto 100/2014 de Castilla-La Mancha.",ok:1,x:"Sigue vigente, modificado por el Decreto 79/2024 y, en su caso, su corrección de errores. Las horas, en los anexos sustituidos en 2024."},
+    {q:"Módulos de Formación y orientación laboral, Empresa e iniciativa emprendedora y Formación en centros de trabajo, este último al final de segundo.",ok:1,x:"El RD 499/2024 modificó el título y suprimió esos módulos: hoy hay módulos transversales y proyecto intermodular, y la formación en empresa se reparte en los dos cursos (RD 659/2023 y Decreto 79/2024)."},
+    {q:"Con el título se accede a grado superior mediante prueba o curso (art. 13.2 del RD 556/2012).",ok:2,x:"La LOE (art. 41.3.b) y el RD 659/2023 (art. 112.1.a) dan acceso directo. El artículo sigue publicado, pero un reglamento no puede contradecir una ley orgánica."},
+    {q:"Convalidación de Formación y orientación laboral y de Empresa e iniciativa emprendedora (art. 14 del RD 556/2012).",ok:4,x:"Los módulos ya no existen: el artículo se ha quedado sin objeto."},
+    {q:"Referencia del módulo 1298: unidad de competencia UC1402_2.",ok:5,x:"Hoy es el estándar ECP1402_2, con el mismo código (RD 532/2025). La referencia vale; solo cambia el nombre."},
+    {q:"Ley 7/2010, art. 70.3: módulo de formación en centros de trabajo.",ok:3,x:"La ley no está derogada y el texto consolidado (15 de abril de 2025) mantiene la redacción de 2010, pero ese apartado cede ante la regulación básica estatal de la formación en empresa. Hay una ley regional de FP en tramitación."}
+  ];
+  var CCOL=["#6C6266","#25695C","#35577A","#B4621B","#6C6266","#6C6266"];
+  var iC=0, hechas=[];
+  function lista(){
+    var h="";CIT.forEach(function(c,i){
+      var st=hechas[i]!==undefined?'<span class="st" style="background:'+CCOL[c.ok]+'">'+SIT[c.ok]+'</span>':'';
+      h+='<div class="li'+(i===iC&&hechas.length<8?' act':'')+'"><span class="k">'+(i+1)+'</span><span>'+c.q.slice(0,58)+(c.q.length>58?'…':'')+(st?'<br>'+st:'')+'</span></div>';
+    });$("cLista").innerHTML=h;
+    $("cSin").classList.toggle("on",hechas.filter(function(x){return x!==undefined}).length===8);
+  }
+  function cita(){
+    var c=CIT[iC];$("cN").textContent="Cita "+(iC+1)+" de 8";$("cQ").textContent=c.q;$("cRes").innerHTML="";
+    var o=$("cOps");o.innerHTML="";
+    SIT.forEach(function(t,k){var b=document.createElement("button");b.type="button";b.className="bt";b.textContent=t;
+      b.addEventListener("click",function(){
+        if(k===c.ok){o.querySelectorAll("button").forEach(function(x){x.disabled=true});b.className="bt ok";hechas[iC]=c.ok;
+          $("cRes").innerHTML='<b class="ok">'+SIT[c.ok]+'.</b> '+c.x+(iC<7?' <button type="button" class="bt prim" id="cSig" style="padding:2px 9px;font-size:12.5px">Siguiente cita →</button>':'');
+          if($("cSig"))$("cSig").addEventListener("click",function(){iC++;cita()});lista();
+        } else {b.className="bt mal";b.disabled=true;$("cRes").innerHTML='<b class="mal">No.</b> Pregúntate primero si la norma sigue en vigor y, si sigue, por qué no se aplica.';}
+      });o.appendChild(b)});
+    lista();
+  }
+  // ---- Escena 2: dos ordenaciones
+  var CUR=["2023-2024","2024-2025","2025-2026","2026-2027"];
+  function tipo(c,f){ if(f===3) return c===3?"na3":"na"; if(c===0) return "ant"; if(c===1) return f===1?"nue":"ant"; return "nue"; }
+  var TX={
+    ant1:["Ordenación anterior","Decreto 100/2014 en su redacción original y RD 556/2012 sin la reforma de 2024. Módulos de Formación y orientación laboral y de Empresa e iniciativa emprendedora."],
+    ant2:["Ordenación anterior","Termina con el currículo original: módulo de Formación en centros de trabajo al final de segundo."],
+    nue1:["Currículo modificado","Decreto 100/2014 modificado por el Decreto 79/2024: formación en empresa curricular, entre 70 y 120 h en primero, módulos transversales."],
+    nue2:["Currículo modificado","Formación en empresa repartida en el ciclo, entre 500 y 580 h en total; proyecto intermodular."],
+    na:["No aplica","El tercer curso solo existe donde el ciclo se ofrece en tres cursos."],
+    na3:["Tercer curso","Solo donde el ciclo se ofrece en tres cursos: se aplica en 2026-2027."]
+  };
+  var selC=[1,2];
+  function rej(){
+    var h='<div></div>';CUR.forEach(function(c){h+='<div class="h">'+c+'</div>'});
+    [1,2,3].forEach(function(f){h+='<div class="r">'+f+'.º curso</div>';
+      CUR.forEach(function(c,ci){var t=tipo(ci,f),k=t.indexOf("na")===0?t:(t+(f===1?"1":"2")),cls=t==="na"?"na":(t==="na3"?"nue":t);
+        h+='<button type="button" class="celda '+cls+(selC[0]===ci&&selC[1]===f?' sel':'')+'" data-c="'+ci+'" data-f="'+f+'"'+(t==="na"?' disabled':'')+'><b>'+TX[k][0]+'</b>'+(t==="na"?'':(f===3?'Ciclo en tres cursos':(t==="ant"?(f===1?'Currículo original':'Con FCT al final'):(f===1?'Empresa: 70–120 h':'Empresa repartida'))))+'</button>'});
+    });
+    $("rej").innerHTML=h;
+    $("rej").querySelectorAll(".celda").forEach(function(b){b.addEventListener("click",function(){selC=[+b.getAttribute("data-c"),+b.getAttribute("data-f")];rej()})});
+    var t=tipo(selC[0],selC[1]),k=t.indexOf("na")===0?t:(t+(selC[1]===1?"1":"2"));
+    var extra="";
+    if(selC[0]===1) extra='<p style="margin:8px 0 0"><b>Curso 2024-2025:</b> en el mismo ciclo, primero sigue el currículo modificado y segundo termina con el anterior. Un mismo departamento programa con dos ordenaciones a la vez.</p>';
+    if(selC[0]===0) extra='<p style="margin:8px 0 0">Es el curso de la programación heredada del caso guía: corresponde por entero a la ordenación anterior.</p>';
+    $("det").innerHTML='<h3>'+CUR[selC[0]]+' · '+selC[1]+'.º curso: '+TX[k][0].toLowerCase()+'</h3><div>'+TX[k][1]+'</div>'+extra;
+  }
+  // ---- Escena 3: qué redacción
+  var FECH=[{t:"Febrero de 2025",x:9,d:0},{t:"Enero de 2026",x:57,d:0},{t:"Junio de 2026",x:78,d:1},{t:"Noviembre de 2026",x:100,d:1}];
+  var PREC=[
+    {t:"Art. 3.6 · Pérdida de la evaluación continua",a:"La redacción original era distinta. Para conocerla hay que acudir al DOCM de 3 de diciembre de 2024: la página no la resume.",n:"El alumnado puede realizar, antes de cada sesión de evaluación ordinaria, pruebas objetivas que comprenden todos los resultados de aprendizaje. No se conservan las calificaciones parciales anteriores a la pérdida del derecho."},
+    {t:"Art. 18.5 · Último curso del Grado D",a:"No existía: la redacción original no contenía esta regla.",n:"Apartado nuevo. El equipo docente puede decidir que quien suspenda como máximo tres módulos, con menos del 30 % de la duración del curso, no repita: los recupera como pendientes, con un informe del anexo VIII."},
+    {t:"Art. 21.7 · Prevención de riesgos",a:"El párrafo no existía en la redacción original.",n:"Párrafo nuevo. Quien no pueda iniciar la formación en empresa por no haber superado los resultados de prevención de riesgos continúa formándose en el centro, y se le califica «superado parcial» o «no superado» en los módulos con formación en empresa."},
+    {t:"Art. 22.4 y 22.5 · Exención de la formación en empresa",a:"La redacción original no fijaba el plazo de solicitud que hoy rige.",n:"Solicitud con al menos 15 días de antelación (anexo X). Decide el departamento de la familia profesional y la reconoce la dirección (anexo X-BIS). En la exención total no cabe «superado parcial»."}
+  ];
+  var iF=1,iP=1;
+  function redaccion(){
+    var f=FECH[iF],p=PREC[iP];
+    $("cur").style.left=f.x+"%";
+    $("fechas").querySelectorAll(".bt").forEach(function(b,i){b.setAttribute("aria-pressed",i===iF?"true":"false")});
+    $("precs").querySelectorAll(".bt").forEach(function(b,i){b.setAttribute("aria-pressed",i===iP?"true":"false")});
+    $("texto").innerHTML=(f.d?'<span class="ver" style="background:var(--verde)">Orden 201/2024 en la redacción de la Orden 55/2026</span>':'<span class="ver" style="background:var(--gris)">Orden 201/2024, redacción original</span>')+'<h3>'+p.t+' · '+f.t.toLowerCase()+'</h3><div>'+(f.d?p.n:p.a)+'</div>'+(f.d?'':'<p style="margin:10px 0 0;color:var(--gris);font-size:14px">Quien aplique hoy esta redacción, o la cite en una programación de 2026-2027, está usando un texto que ya no rige.</p>');
+  }
+  FECH.forEach(function(f,i){var b=document.createElement("button");b.type="button";b.className="bt";b.textContent=f.t;b.addEventListener("click",function(){iF=i;redaccion()});$("fechas").appendChild(b)});
+  PREC.forEach(function(p,i){var b=document.createElement("button");b.type="button";b.className="bt";b.textContent=p.t.split(" · ")[0];b.title=p.t;b.addEventListener("click",function(){iP=i;redaccion()});$("precs").appendChild(b)});
+  // ---- Escena 4: protocolo
+  var PAS=[
+    {t:"Localizar por el identificador oficial",q:"¿Dónde está la norma?",d:"Se busca el identificador oficial (BOE-A-… o el enlace ELI del DOCM), no un resultado de un buscador general.",c:"TodoFP → «Qué estudiar» → Imagen y Sonido → ficha de Técnico en Vídeo Disc-jockey y Sonido. El enlace del real decreto lleva al RD 556/2012 en el BOE.",o:"El enlace «Currículo Ministerio» se abre para conocerlo, pero no se usa: lleva a la Orden EFD/657/2024, que solo rige en el ámbito de gestión del ministerio."},
+    {t:"Comprobar si está derogada",q:"¿Sigue en vigor?",d:"Se mira si el boletín la marca como derogada y se abren sus referencias posteriores.",c:"El RD 556/2012 no está derogado. Entre sus referencias posteriores figura el RD 499/2024, que lo modifica."},
+    {t:"Leer el texto consolidado y su fecha",q:"¿Qué redacción se aplica?",d:"Se lee el texto consolidado y se anota su fecha de actualización. Si no existe o está desfasado, se lee la norma original con cada norma que la modifica, en orden.",c:"En «Análisis» del BOE se comprueba que el consolidado recoge el RD 499/2024. Los arts. 13.2 y 14 se leen con cautela: el primero contradice la LOE y el segundo ha perdido su objeto.",o:"El texto consolidado es informativo y no tiene valor jurídico: el BOE lo advierte."},
+    {t:"Revisar transitorias y calendario",q:"¿Desde cuándo y para quién?",d:"Se revisan las disposiciones transitorias y el calendario de implantación: a qué cursos y a qué alumnado se aplica cada redacción.",c:"En Castilla-La Mancha, el Decreto 79/2024 se aplicó a primero en 2024-2025 y a segundo en 2025-2026 (escena 3)."},
+    {t:"Anotar la fecha de consulta",q:"¿Se puede comprobar lo que afirmo?",d:"Toda afirmación normativa lleva su fuente y la fecha en que se consultó. Sin fecha, no se puede comprobar.",c:"En el expediente normativo: «RD 556/2012, modificado por el RD 499/2024; texto consolidado del BOE, consultado el [fecha]»."}
+  ];
+  var iPa=0,vistos={0:true};
+  function paso(){
+    var h="";PAS.forEach(function(p,i){h+='<button type="button" class="paso'+(vistos[i]&&i!==iPa?' hecho':'')+'" aria-pressed="'+(i===iPa)+'" data-i="'+i+'"><i>'+(i+1)+'</i>'+p.t+'</button>'});
+    $("pasos").innerHTML=h;$("pasos").querySelectorAll(".paso").forEach(function(b){b.addEventListener("click",function(){iPa=+b.getAttribute("data-i");vistos[iPa]=true;paso()})});
+    var p=PAS[iPa];$("detp").innerHTML='<h3>'+(iPa+1)+'. '+p.t+'</h3><p class="q">'+p.q+'</p><div>'+p.d+'</div><div class="caso"><b>En el caso guía.</b> '+p.c+'</div>'+(p.o?'<div class="ojo">'+p.o+'</div>':'');
+  }
+  window.alEntrar=function(n){ if(n===1){iC=0;hechas=[];cita();} if(n===2){selC=[1,2];rej();} if(n===3){iF=1;iP=1;redaccion();} if(n===4){iPa=0;vistos={0:true};paso();} };
+
+
+  var $=function(i){return document.getElementById(i)};
+  var s=0, nav=document.querySelector("nav.puntos");
+  ESC.forEach(function(e,i){var x=document.createElement("button");x.type="button";x.textContent=(i+1)+". "+e.t;x.addEventListener("click",function(){ir(i)});nav.appendChild(x)});
+  function pintar(){
+    var e=ESC[s]; document.body.setAttribute("data-s",s);
+    $("num").textContent="Escena "+(s+1)+" de "+ESC.length;
+    $("tit").textContent=e.t;$("preg").textContent=e.p;$("cuerpo").textContent=e.c;$("fuente").textContent="Fuente: "+e.f;
+    $("ant").disabled=s===0;$("sig").disabled=s===ESC.length-1;
+    nav.querySelectorAll("button").forEach(function(x,i){if(i===s)x.setAttribute("aria-current","step");else x.removeAttribute("aria-current")});
+    document.querySelectorAll(".obj").forEach(function(o){o.classList.toggle("on",o.getAttribute("data-e")===String(s))});
+    if(window.alEntrar)alEntrar(s);
+  }
+  function ir(n){s=Math.max(0,Math.min(ESC.length-1,n));pintar()}
+  $("sig").addEventListener("click",function(){ir(s+1)});
+  $("ant").addEventListener("click",function(){ir(s-1)});
+  document.addEventListener("keydown",function(ev){
+    if(ev.target&&ev.target.tagName==="INPUT")return;
+    if(ev.target&&ev.target.tagName==="BUTTON"&&(ev.key===" "||ev.key==="Enter"))return;
+    if(ev.key==="ArrowRight"||ev.key==="PageDown"){ev.preventDefault();ir(s+1)}
+    else if(ev.key==="ArrowLeft"||ev.key==="PageUp"){ev.preventDefault();ir(s-1)}
+    else if(ev.key==="f"||ev.key==="F"){try{if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(function(){})}else{document.exitFullscreen()}}catch(e){}}
+  });
+  function escalar(){var m=$("marco"),stg=$("stage"),w=m.clientWidth,h=m.clientHeight;if(!w||!h)return;var k=Math.min(w/1000,h/640)*.96;stg.style.transform="translate("+((w-1000*k)/2)+"px,"+((h-640*k)/2)+"px) scale("+k+")"}
+  window.addEventListener("resize",escalar);if(window.ResizeObserver)new ResizeObserver(escalar).observe($("marco"));
+  pintar();escalar();
+
+})();
+</script>
+</body>
+</html>

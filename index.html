@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Recursos interactivos · Bases y fundamentos del currículo de las familias de servicios (MUFPS)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --granate:#A3002F; --granate-claro:#F7E4E9; --verde:#25695C; --pizarra:#35577A; --ambar:#B4621B;
+  --tinta:#2A2125; --gris:#6C6266; --linea:#DED6D9; --papel:#FFFFFF; --fondo:#F6F3F4;
+  --f-disp:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;
+  --f-cuerpo:"IBM Plex Sans",Arial,Helvetica,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--tinta);font-family:var(--f-cuerpo);line-height:1.5}
+.portada{background:var(--papel);border-bottom:1px solid var(--linea)}
+.portada .in{max-width:1120px;margin:0 auto;padding:44px 28px 34px}
+.etq{font:600 14px var(--f-disp);letter-spacing:.08em;text-transform:uppercase;color:var(--granate)}
+h1{font:700 44px/1.05 var(--f-disp);margin:10px 0 14px;max-width:22ch;text-wrap:balance}
+.intro{font-size:17px;max-width:68ch;margin:0;color:#43393D}
+.datos{display:flex;gap:22px;flex-wrap:wrap;margin-top:18px;font-size:13.5px;color:var(--gris)}
+.datos b{color:var(--tinta);font-weight:600}
+.indice{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.indice a{font:600 13.5px var(--f-cuerpo);color:var(--granate);text-decoration:none;border:1px solid var(--granate);border-radius:999px;padding:5px 13px}
+.indice a:hover{background:var(--granate);color:#fff}
+main{max-width:1120px;margin:0 auto;padding:12px 28px 40px}
+section{margin-top:34px}
+section h2{font:700 28px var(--f-disp);margin:0 0 4px}
+section .sub{color:var(--gris);margin:0 0 16px;font-size:15px;max-width:72ch}
+.rejilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.tarjeta{display:flex;flex-direction:column;background:var(--papel);border:1px solid var(--linea);border-radius:12px;padding:18px 20px 16px;text-decoration:none;color:inherit;border-top:5px solid var(--granate);transition:box-shadow 200ms,transform 200ms}
+a.tarjeta:hover{box-shadow:0 10px 24px rgba(60,20,30,.12);transform:translateY(-2px)}
+a.tarjeta:focus-visible{outline:3px solid var(--ambar);outline-offset:3px}
+.tarjeta h3{font:700 22px/1.12 var(--f-disp);margin:0 0 6px}
+.tarjeta p{margin:0;font-size:14.5px}
+.tarjeta .uso{margin-top:10px;font-size:13.5px;color:#43393D;background:var(--fondo);border-radius:8px;padding:8px 10px}
+.tarjeta .uso b{font-weight:600}
+.tarjeta .pie{margin-top:auto;padding-top:12px;display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--gris)}
+.tarjeta .ir{font:600 13.5px var(--f-cuerpo);color:var(--granate)}
+.tarjeta.pend{border-top-color:var(--linea);opacity:.7}
+.tarjeta.pend .ir{color:var(--gris)}
+.t4 .tarjeta{border-top-color:var(--pizarra)}
+footer{border-top:1px solid var(--linea);background:var(--papel)}
+footer .in{max-width:1120px;margin:0 auto;padding:18px 28px;font-size:13px;color:var(--gris)}
+@media (max-width:600px){h1{font-size:34px}.portada .in{padding:30px 18px 24px}main{padding:8px 18px 30px}}
+</style>
+</head>
+<body>
+<div class="portada"><div class="in">
+  <div class="etq">Máster en Profesorado · Especialidad de Familias de Servicios</div>
+  <h1>Recursos interactivos de Bases y fundamentos del currículo</h1>
+  <p class="intro">Páginas para explicar en clase, y repasar después, las piezas del sistema de Formación Profesional que más cuesta separar. Todas siguen el mismo caso guía: el ciclo de grado medio de Técnico en Vídeo Disc-jockey y Sonido, impartido en un instituto público de Castilla-La Mancha.</p>
+  <div class="datos"><span><b>Normativa comprobada:</b> octubre de 2026</span><span><b>Última revisión:</b> noviembre de 2026</span><span><b>Uso:</b> flechas del teclado para avanzar · F para pantalla completa</span></div>
+  <nav class="indice" aria-label="Temas"><a href="#tema4">Tema 4 · Marco legislativo</a><a href="#tema5-6">Temas 5 y 6 · El Sistema de FP</a></nav>
+</div></div>
+<main>
+  <section id="tema4" class="t4">
+    <h2>Tema 4 · Marco legislativo de la Formación Profesional</h2>
+    <p class="sub">Quién puede regular, cómo se ordenan las normas y qué texto se aplica hoy.</p>
+    <div class="rejilla">
+      <a class="tarjeta" href="tema4/escalera-normativa/index.html">
+        <h3>La escalera normativa</h3>
+        <p>Las dos escaleras, Estado y Castilla-La Mancha, peldaño a peldaño. Incluye un clasificador de documentos y la diferencia entre jerarquía y prevalencia.</p>
+        <div class="uso"><b>Cuándo:</b> sesión 1, después de la escalera normativa. El clasificador sirve para corregir la actividad 1.</div>
+        <div class="pie"><span>6 escenas</span><span class="ir">Abrir →</span></div>
+      </a>
+      <a class="tarjeta" href="tema4/sigue-valiendo/index.html">
+        <h3>¿Sigue valiendo?</h3>
+        <p>Las seis formas de que una regla publicada deje de aplicarse, las ocho citas de la programación heredada y qué redacción de la Orden 201/2024 rige en cada fecha.</p>
+        <div class="uso"><b>Cuándo:</b> sesión 2, después de la actividad 2. Las ocho citas son la síntesis del caso guía.</div>
+        <div class="pie"><span>5 escenas</span><span class="ir">Abrir →</span></div>
+      </a>
+      <a class="tarjeta" href="tema4/quien-decide/index.html">
+        <h3>¿Quién decide? Del BOE al aula</h3>
+        <p>La cadena del precepto a la programación, diez decisiones para clasificar, el módulo 1298 en tres territorios y un caso resuelto sobre el margen del docente.</p>
+        <div class="uso"><b>Cuándo:</b> sesión 2, antes de la actividad 3. El caso resuelto es el modelo de respuesta.</div>
+        <div class="pie"><span>4 escenas</span><span class="ir">Abrir →</span></div>
+      </a>
+    </div>
+  </section>
+  <section id="tema5-6">
+    <h2>Temas 5 y 6 · El Sistema de Formación Profesional</h2>
+    <p class="sub">Cómo se organiza el sistema, qué es cada pieza y cuánto se aprende en la empresa.</p>
+    <div class="rejilla">
+      <a class="tarjeta" href="tema5-6/del-trabajo-a-la-credencial/index.html">
+        <h3>Del trabajo a la credencial</h3>
+        <p>De un puesto de trabajo a un título, pieza a pieza: estándar, módulo, ofertas, currículo y credencial, con el atajo de la acreditación.</p>
+        <div class="uso"><b>Cuándo:</b> sesión 1, como repaso de las siete piezas del sistema.</div>
+        <div class="pie"><span>7 escenas</span><span class="ir">Abrir →</span></div>
+      </a>
+      <a class="tarjeta" href="tema5-6/cuatro-dimensiones/index.html">
+        <h3>Grado, nivel, modalidad y régimen</h3>
+        <p>Una ficha de oferta que cambia una dimensión cada vez, con su equivalencia en el MECU, el Marco Europeo y el MECES, más un laboratorio y cuatro supuestos.</p>
+        <div class="uso"><b>Cuándo:</b> sesión 1, como calentamiento de la actividad 1.</div>
+        <div class="pie"><span>7 escenas</span><span class="ir">Abrir →</span></div>
+      </a>
+      <a class="tarjeta" href="tema5-6/cifras-formacion-empresa/index.html">
+        <h3>Las cifras de la formación en empresa</h3>
+        <p>Porcentajes y horas de la ley, el reglamento y Castilla-La Mancha, con barras proporcionales, y el reparto de resultados del módulo 1298.</p>
+        <div class="uso"><b>Cuándo:</b> sesión 2, al explicar los regímenes y el reparto del módulo 1298.</div>
+        <div class="pie"><span>9 escenas</span><span class="ir">Abrir →</span></div>
+      </a>
+    </div>
+  </section>
+</main>
+<footer><div class="in">Material docente de apoyo. Las páginas resumen la normativa con fines didácticos y no sustituyen la consulta del Boletín Oficial del Estado ni del Diario Oficial de Castilla-La Mancha. Antes de usarlas, comprueba que no se ha publicado una norma posterior.</div></footer>
+</body>
+</html>

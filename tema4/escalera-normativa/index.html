@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La escalera normativa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --granate:#A3002F; --granate-claro:#F7E4E9;
+  --estado:#35577A; --estado-claro:#E3EBF3;
+  --clm:#B4621B; --clm-claro:#FBF1E7;
+  --verde:#25695C; --verde-claro:#E1EFEB;
+  --rojo:#B3261E; --rojo-claro:#FBE9E7;
+  --tinta:#2A2125; --gris:#6C6266; --linea:#DED6D9; --papel:#FFFFFF; --fondo:#F6F3F4;
+  --f-disp:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;
+  --f-cuerpo:"IBM Plex Sans",Arial,Helvetica,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--fondo);color:var(--tinta);font-family:var(--f-cuerpo);display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:20px;padding:12px 24px;background:var(--papel);border-bottom:1px solid var(--linea);flex-wrap:wrap}
+.volver{font:600 13px var(--f-cuerpo);color:var(--granate);text-decoration:none;border:1px solid var(--granate);border-radius:999px;padding:4px 11px}
+.volver:hover{background:var(--granate);color:#fff}
+.marca{font-family:var(--f-disp);font-weight:700;color:var(--granate);font-size:15px;letter-spacing:.02em}
+.marca span{color:var(--gris);font-weight:500}
+nav.puntos{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+nav.puntos button{font:500 13px var(--f-cuerpo);border:1px solid var(--linea);background:var(--papel);color:var(--gris);border-radius:999px;padding:5px 11px;cursor:pointer}
+nav.puntos button[aria-current="step"]{background:var(--granate);border-color:var(--granate);color:#fff}
+button:focus-visible{outline:3px solid var(--clm);outline-offset:2px}
+main{flex:1;display:grid;grid-template-columns:minmax(280px,360px) 1fr;min-height:0}
+aside{padding:28px 26px 20px;display:flex;flex-direction:column;gap:12px;background:var(--papel);border-right:1px solid var(--linea);overflow:auto}
+.num{font-family:var(--f-disp);font-weight:600;color:var(--granate);font-size:15px;letter-spacing:.06em;text-transform:uppercase}
+aside h1{font-family:var(--f-disp);font-weight:700;font-size:38px;line-height:1.04;margin:0;text-wrap:balance}
+.pregunta{font-size:19px;font-style:italic;color:var(--granate);margin:0}
+.cuerpo{font-size:16px;line-height:1.55;margin:0;max-width:62ch}
+.fuente{font-size:12.5px;color:var(--gris);margin-top:auto;border-top:1px solid var(--linea);padding-top:10px;line-height:1.45}
+.ctl{display:flex;gap:8px;align-items:center}
+.ctl button{font:600 14px var(--f-cuerpo);border:1px solid var(--granate);background:var(--papel);color:var(--granate);border-radius:6px;padding:8px 14px;cursor:pointer}
+.ctl button.prim{background:var(--granate);color:#fff}
+.ctl button:disabled{opacity:.35;cursor:default}
+.marco{position:relative;min-height:0;overflow:hidden}
+.stage{position:absolute;left:0;top:0;width:1000px;height:640px;transform-origin:0 0}
+
+/* Escaleras */
+.cab{position:absolute;top:22px;font:700 17px var(--f-disp);letter-spacing:.02em}
+.cab small{font:500 13px var(--f-cuerpo);color:var(--gris);margin-left:6px}
+#cabE{left:40px;color:var(--estado)} #cabA{left:560px;color:var(--clm)}
+.p{position:absolute;height:60px;border-radius:8px;border:1px solid;text-align:left;padding:7px 12px;font:inherit;color:var(--tinta);cursor:default;transition:opacity 400ms,box-shadow 300ms,transform 300ms,background 300ms}
+.p b{display:block;font:700 15.5px var(--f-disp)}
+.p span{display:block;font-size:12.5px;color:var(--gris);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.p.e{background:var(--estado-claro);border-color:#B9CBDD}
+.p.a{background:var(--clm-claro);border-color:#E8C9A8}
+.p.c{background:#EEEAEC;border-color:#D3CBCF;border-style:dashed}
+.p.f{background:var(--papel);border-color:#D3CBCF;border-style:dotted}
+.clic .p{cursor:pointer}
+.clic .p:hover{box-shadow:0 0 0 2px var(--granate)}
+.p.sel{box-shadow:0 0 0 3px var(--granate),0 8px 18px rgba(60,20,30,.14)}
+.p.ok{box-shadow:0 0 0 3px var(--verde)}
+.p.mal{box-shadow:0 0 0 3px var(--rojo);animation:sacude 380ms}
+@keyframes sacude{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.p.tenue{opacity:.28}
+.p.foco{box-shadow:0 0 0 3px var(--granate)}
+.tag{position:absolute;right:8px;top:7px;font:600 12px var(--f-cuerpo);border-radius:999px;padding:3px 9px;color:#fff;opacity:0;transition:opacity 400ms}
+.tag.v{background:var(--verde)} .tag.r{background:var(--rojo)}
+.tag.on{opacity:1}
+svg.flechas{position:absolute;left:0;top:0;width:1000px;height:640px;pointer-events:none;overflow:visible}
+svg .g{opacity:0;transition:opacity 500ms}
+svg .g.on{opacity:1}
+
+/* Panel inferior */
+.panel{position:absolute;left:40px;top:482px;width:920px;height:152px;background:var(--papel);border:1px solid var(--linea);border-radius:10px;padding:12px 16px;font-size:14.5px;line-height:1.45;overflow:hidden}
+.panel h3{margin:0 0 4px;font:700 17px var(--f-disp)}
+.panel .meta{display:flex;gap:18px;flex-wrap:wrap;font-size:13.5px;margin-top:4px}
+.panel .meta b{color:var(--gris);font-weight:600}
+.doc{display:flex;gap:14px;align-items:flex-start;padding-right:150px}
+.doc .n{flex:0 0 auto;width:42px;height:42px;border-radius:50%;background:var(--granate);color:#fff;font:700 18px var(--f-disp);display:grid;place-items:center}
+.doc .t{font:600 16px var(--f-cuerpo);line-height:1.35}
+.res{margin-top:6px;font-size:13.5px}
+.res.ok b{color:var(--verde)} .res.mal b{color:var(--rojo)}
+.btns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.btns button{font:600 13.5px var(--f-cuerpo);border:1px solid var(--granate);background:var(--papel);color:var(--granate);border-radius:6px;padding:6px 12px;cursor:pointer}
+.btns button.prim{background:var(--granate);color:#fff}
+.btns button.ok{background:var(--verde);border-color:var(--verde);color:#fff}
+.btns button.mal{background:var(--rojo);border-color:var(--rojo);color:#fff}
+.btns button:disabled{cursor:default}
+.marcador{position:absolute;right:16px;top:12px;font:600 13px var(--f-cuerpo);color:var(--gris)}
+
+@media (max-width:900px){
+  main{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  aside{border-right:0;border-bottom:1px solid var(--linea);padding:18px 16px}
+  aside h1{font-size:30px}
+  .marco{min-height:62vw}
+  header{padding:10px 16px}
+}
+@media (prefers-reduced-motion:reduce){*{transition-duration:1ms !important;animation:none !important}}
+</style>
+</head>
+<body data-s="0">
+<header>
+  <a class="volver" href="../../index.html">← Colección</a>
+  <div class="marca">Tema 4 · La escalera normativa <span>· Caso guía: Técnico en Vídeo Disc-jockey y Sonido</span></div>
+  <nav class="puntos" aria-label="Escenas"></nav>
+</header>
+<main>
+  <aside aria-live="polite">
+    <div class="num" id="num">Escena 1 de 6</div>
+    <h1 id="tit"></h1>
+    <p class="pregunta" id="preg"></p>
+    <p class="cuerpo" id="cuerpo"></p>
+    <div class="ctl">
+      <button type="button" id="ant">← Anterior</button>
+      <button type="button" id="sig" class="prim">Siguiente →</button>
+    </div>
+    <div class="fuente" id="fuente"></div>
+  </aside>
+  <div class="marco" id="marco">
+    <div class="stage" id="stage">
+      <div class="cab" id="cabE">Estado <small>publica en el BOE</small></div>
+      <div class="cab" id="cabA">Castilla-La Mancha <small>publica en el DOCM</small></div>
+      <div id="peld"></div>
+      <svg class="flechas" viewBox="0 0 1000 640" aria-hidden="true">
+        <defs>
+          <marker id="mE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#35577A"/></marker>
+          <marker id="mG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A3002F"/></marker>
+        </defs>
+        <g class="g" id="gBase">
+          <path d="M440,92 L556,92" stroke="#35577A" stroke-width="2" stroke-dasharray="6 5" fill="none" marker-end="url(#mE)"/>
+          <path d="M440,240 L556,240" stroke="#35577A" stroke-width="2" stroke-dasharray="6 5" fill="none" marker-end="url(#mE)"/>
+          <text x="498" y="232" text-anchor="middle" font-size="12.5" font-family="IBM Plex Sans, Arial" fill="#35577A" font-weight="600">bases</text>
+          <text x="498" y="84" text-anchor="middle" font-size="12.5" font-family="IBM Plex Sans, Arial" fill="#35577A" font-weight="600">reparto</text>
+        </g>
+        <g class="g" id="gJer">
+          <path d="M240,198 L240,208" stroke="#A3002F" stroke-width="3" fill="none" marker-end="url(#mG)"/>
+          <rect x="452" y="160" width="96" height="58" rx="6" fill="#fff" stroke="#A3002F"/>
+          <text x="500" y="182" text-anchor="middle" font-size="13" font-family="IBM Plex Sans, Arial" fill="#A3002F" font-weight="700">Jerarquía</text>
+          <text x="500" y="199" text-anchor="middle" font-size="11.5" font-family="IBM Plex Sans, Arial" fill="#6C6266">art. 9.3 CE</text>
+          <text x="500" y="212" text-anchor="middle" font-size="11.5" font-family="IBM Plex Sans, Arial" fill="#6C6266">misma escalera</text>
+        </g>
+        <g class="g" id="gPre">
+          <path d="M440,190 C500,190 500,166 556,166" stroke="#A3002F" stroke-width="3" fill="none" marker-end="url(#mG)"/>
+          <rect x="446" y="100" width="108" height="50" rx="6" fill="#fff" stroke="#A3002F"/>
+          <text x="500" y="121" text-anchor="middle" font-size="13" font-family="IBM Plex Sans, Arial" fill="#A3002F" font-weight="700">Prevalencia</text>
+          <text x="500" y="139" text-anchor="middle" font-size="11.5" font-family="IBM Plex Sans, Arial" fill="#6C6266">art. 149.3 CE</text>
+        </g>
+      </svg>
+      <div class="panel" id="panel"></div>
+    </div>
+  </div>
+</main>
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  // Peldaños: x, y, ancho, clase, nombre, ejemplo, órgano, qué regula, boletín
+  var P={
+    e1:{x:40,y:62,w:400,c:"e",n:"Constitución",ej:"Arts. 27, 149.1.7.ª, 149.1.30.ª y 149.3",org:"Cortes Generales; ratificada en referéndum",reg:"Reparte la competencia: el Estado fija lo básico y los títulos (149.1.30.ª) y la legislación laboral (149.1.7.ª).",bol:"BOE"},
+    e2:{x:40,y:136,w:400,c:"e",n:"Leyes orgánicas y leyes",ej:"LOE; Ley Orgánica 3/2022; Estatuto de los Trabajadores",org:"Cortes Generales (la orgánica, con mayoría absoluta del Congreso); el Gobierno por delegación en los reales decretos legislativos",reg:"Ordenación del sistema: grados, títulos, acceso y carácter dual. Las leyes ordinarias y los reales decretos legislativos, lo laboral y la Seguridad Social.",bol:"BOE"},
+    e3:{x:40,y:210,w:400,c:"e",n:"Reales decretos",ej:"RD 659/2023; RD 556/2012 del título",org:"Gobierno (Consejo de Ministros)",reg:"Desarrollo general del sistema (RD 659/2023), catálogos (RD 69/2025) y cada título con su currículo básico.",bol:"BOE"},
+    e4:{x:40,y:284,w:400,c:"e",n:"Órdenes ministeriales",ej:"Orden EFD/657/2024",org:"Ministerio",reg:"Currículo y organización en el ámbito de gestión del ministerio; no rigen en Castilla-La Mancha.",bol:"BOE"},
+    a1:{x:560,y:62,w:400,c:"a",n:"Estatuto de Autonomía",ej:"Ley Orgánica 9/1982, art. 37.1",org:"Cortes Generales: es una ley orgánica estatal",reg:"Atribuye a la Junta el desarrollo legislativo y la ejecución de la enseñanza, con el límite del art. 149.1.30.ª.",bol:"BOE"},
+    a2:{x:560,y:136,w:400,c:"a",n:"Leyes autonómicas",ej:"Ley 7/2010, de Educación de Castilla-La Mancha",org:"Cortes de Castilla-La Mancha",reg:"Marco educativo regional; la formación profesional inicial, en los arts. 68 a 77.",bol:"DOCM y BOE"},
+    a3:{x:560,y:210,w:400,c:"a",n:"Decretos",ej:"Decreto 100/2014; Decreto 79/2024",org:"Consejo de Gobierno de la Junta",reg:"Currículo de cada ciclo y sus modificaciones: horas reales, cursos, horas en empresa, optatividad.",bol:"DOCM"},
+    a4:{x:560,y:284,w:400,c:"a",n:"Órdenes de la consejería",ej:"Órdenes 201/2024 y 204/2024",org:"Consejería de Educación, Cultura y Deportes",reg:"Evaluación, formación dual, admisión y organización del curso.",bol:"DOCM"},
+    a5:{x:560,y:358,w:400,c:"a",n:"Resoluciones e instrucciones",ej:"Instrucciones de la modalidad virtual",org:"Direcciones generales",reg:"Convocatorias, calendarios e instrucciones. Las instrucciones no son reglamento: dirigen a los órganos dependientes y no pueden contradecir una orden ni un decreto (Ley 40/2015, art. 6).",bol:"DOCM las resoluciones; las instrucciones, solo si una norma lo exige"},
+    c:{x:40,y:426,w:600,c:"c",n:"Centro: no son normas",ej:"Proyecto educativo, normas de organización, programaciones, plan de formación",org:"Órganos del centro y departamentos",reg:"Concretan las normas para un centro y un grupo. Vinculan una vez aprobados, pero no cambian resultados de aprendizaje, criterios ni reglas de evaluación.",bol:"No se publican en boletín"},
+    f:{x:660,y:426,w:300,c:"f",n:"Todavía no es norma",ej:"Textos en tramitación",org:"Quien lo promueve; aún sin aprobar",reg:"Un anteproyecto o un proyecto no obliga a nadie hasta que se aprueba y se publica.",bol:"—"}
+  };
+  var peld=$("peld");
+  Object.keys(P).forEach(function(k){
+    var d=P[k],b=document.createElement("button");b.type="button";b.className="p "+d.c;b.id="p_"+k;
+    b.style.left=d.x+"px";b.style.top=d.y+"px";b.style.width=d.w+"px";if(k==="c"||k==="f")b.style.height="46px";
+    b.innerHTML="<b>"+d.n+"</b><span>"+d.ej+"</span><i class=\"tag\"></i>";
+    b.addEventListener("click",function(){pulsar(k)});
+    peld.appendChild(b);
+  });
+
+  var DOCS=[
+    {t:"Ley Orgánica 3/2022, de ordenación e integración de la Formación Profesional.",ok:["e2"],r:"Ley orgánica",o:"Cortes Generales",b:"BOE"},
+    {t:"Real Decreto 659/2023, por el que se desarrolla la ordenación del Sistema de Formación Profesional.",ok:["e3"],r:"Real decreto",o:"Gobierno",b:"BOE"},
+    {t:"Real Decreto 556/2012, del título de Técnico en Vídeo Disc-jockey y Sonido.",ok:["e3"],r:"Real decreto",o:"Gobierno",b:"BOE"},
+    {t:"Orden EFD/657/2024, de currículo de los ciclos de grado medio.",ok:["e4"],r:"Orden ministerial",o:"Ministerio",b:"BOE",x:"Rige solo en el ámbito de gestión del ministerio."},
+    {t:"Estatuto de Autonomía de Castilla-La Mancha.",ok:["a1","e2"],r:"Ley orgánica (Ley Orgánica 9/1982)",o:"Cortes Generales",b:"BOE",x:"Es la norma institucional básica de la comunidad, pero la aprueban las Cortes Generales como ley orgánica estatal."},
+    {t:"Ley 7/2010, de Educación de Castilla-La Mancha.",ok:["a2"],r:"Ley autonómica",o:"Cortes de Castilla-La Mancha",b:"DOCM y BOE"},
+    {t:"Decreto 79/2024, que modifica los currículos de grado medio de Castilla-La Mancha.",ok:["a3"],r:"Decreto autonómico",o:"Consejo de Gobierno",b:"DOCM"},
+    {t:"Orden 201/2024, de evaluación de los grados D y E en Castilla-La Mancha.",ok:["a4"],r:"Orden de consejería",o:"Consejería de Educación, Cultura y Deportes",b:"DOCM"},
+    {t:"Instrucciones para los centros que imparten ciclos en modalidad virtual, curso 2026-2027.",ok:["a5"],r:"Instrucciones: no es reglamento",o:"Dirección General de Formación Profesional",b:"Remitidas a los centros",x:"Obligan a los órganos que dependen de quien las dicta, pero no pueden contradecir una orden ni un decreto."},
+    {t:"Texto refundido de la Ley del Estatuto de los Trabajadores.",ok:["e2"],r:"Real decreto legislativo, con rango de ley",o:"Gobierno, por delegación de las Cortes",b:"BOE",x:"Lo aprueba el Gobierno, pero tiene rango de ley: no es un reglamento."},
+    {t:"Programación didáctica del módulo 1298 aprobada por el departamento.",ok:["c"],r:"No es norma: documento de centro",o:"Departamento, dentro de la planificación del centro",b:"—"},
+    {t:"Anteproyecto de Ley de Formación Profesional de Castilla-La Mancha.",ok:["f"],r:"No es norma: texto en tramitación",o:"Consejería; tomado en consideración por el Consejo de Gobierno",b:"—",x:"Mientras no se apruebe y se publique, no obliga."}
+  ];
+  var CASOS=[
+    {t:"El art. 13.2 del RD 556/2012 exige prueba o curso para acceder a grado superior con el título de Técnico. La LOE (art. 41.3.b) da acceso directo.",ok:"Jerarquía",p:["e2","e3"],x:"Un reglamento no puede contradecir una ley orgánica. Funcionaría igual aunque el real decreto fuese posterior."},
+    {t:"El art. 70.3 de la Ley 7/2010 sigue exigiendo un módulo de Formación en centros de trabajo. La regulación básica estatal reparte la formación en empresa a lo largo del ciclo.",ok:"Prevalencia",p:["e2","e3","a2"],x:"Entre el ordenamiento estatal y el autonómico no hay rango: cede por prevalencia de la norma básica estatal (art. 149.3 CE)."},
+    {t:"La Ley Orgánica 3/2022 deja sin efecto la Ley Orgánica 5/2002, de las Cualificaciones y de la Formación Profesional.",ok:"Derogación",p:["e2"],x:"La ley posterior deroga a la anterior en lo que dispone expresamente y en lo incompatible (art. 2.2 del Código Civil)."},
+    {t:"La consejería quiere cambiar los resultados de aprendizaje del módulo 1298 para adaptarlos a la industria regional.",ok:"Competencia",p:["e3","a3"],x:"Los resultados de aprendizaje y los criterios los fija el Estado en el real decreto del título. La comunidad no puede modificarlos."},
+    {t:"Un docente de Cuenca copia las horas de su módulo de la Orden EFD/657/2024.",ok:"Competencia",p:["e4","a3"],x:"Esa orden solo rige en el ámbito de gestión del ministerio. En Castilla-La Mancha las horas las fija el decreto de currículo."},
+    {t:"Una orden de la consejería contradice lo que dispone un decreto del Consejo de Gobierno.",ok:"Jerarquía",p:["a3","a4"],x:"Dentro del ordenamiento autonómico también hay rango: la orden está por debajo del decreto y no puede contradecirlo."}
+  ];
+  var CRIT=["Jerarquía","Competencia","Derogación","Prevalencia"];
+
+  var escenas=[
+    {t:"Dos escaleras",p:"¿Qué norma está por encima de cuál?",c:"Un docente de Castilla-La Mancha trabaja con dos escaleras: la del Estado y la de la comunidad. Dentro de cada una, el rango depende del órgano que aprueba la norma. Entre las dos no hay escalones: hay un reparto de competencias, en el que el Estado fija las bases y la comunidad las desarrolla. Debajo está el centro, cuyos documentos obligan en la práctica pero no son normas.",f:"Constitución, arts. 9.3, 27, 81, 149.1.7.ª, 149.1.30.ª y 149.3; Estatuto de Autonomía de Castilla-La Mancha, art. 37.1."},
+    {t:"Cada peldaño, un órgano",p:"¿Quién aprueba cada norma y qué regula?",c:"Pulsa cualquier peldaño. El rango no lo da el tema ni la importancia, sino quién aprueba la norma: las Cortes, el Gobierno, el ministerio, la consejería o una dirección general.",f:"Tema 4, tabla de tipos de norma; Ley 40/2015, art. 6."},
+    {t:"Clasifica los doce documentos",p:"¿En qué peldaño va cada uno?",c:"Son los documentos de la actividad 1. Lee cada uno y pulsa su peldaño en la escalera. Úsalo para corregir la actividad después de hacerla en parejas, no en lugar de ella. Dos trampas: hay documentos que no son normas, y uno que aprueba el Gobierno tiene rango de ley.",f:"Claves de la actividad 1 del Tema 4."},
+    {t:"Jerarquía: dentro de una escalera",p:"¿Por qué no se aplica el art. 13.2 del RD 556/2012?",c:"El real decreto del título sigue diciendo que se accede a grado superior «mediante prueba o curso». La LOE, por encima, da acceso directo con el título de Técnico. El artículo sigue publicado, pero no se aplica: un reglamento no puede contradecir una ley orgánica.",f:"Constitución, art. 9.3; LOE, art. 41.3.b); RD 659/2023, art. 112.1.a); RD 556/2012, art. 13.2."},
+    {t:"Prevalencia: entre escaleras",p:"¿Y por qué no se aplica el art. 70.3 de la Ley 7/2010?",c:"La ley autonómica sigue exigiendo un módulo de Formación en centros de trabajo. No cede por rango, porque una ley de las Cortes regionales no está por debajo de una ley orgánica estatal. Cede por prevalencia: en lo que no es competencia exclusiva de la comunidad, la norma básica estatal prevalece.",f:"Constitución, art. 149.3; Ley 7/2010, art. 70.3; LO 3/2022, art. 55; RD 659/2023, art. 9; Decreto 79/2024; Orden 204/2024."},
+    {t:"¿Qué criterio se aplica?",p:"Jerarquía, competencia, derogación o prevalencia",c:"Seis conflictos entre normas. Elige el criterio que los resuelve. La escalera marca las normas implicadas.",f:"Constitución, arts. 9.3 y 149.3; Código Civil, art. 2.2; Tema 4, tabla de criterios."}
+  ];
+
+  var s=0, iDoc=0, aciertos=0, intento=0, resueltos=[], iCaso=0;
+  var nav=document.querySelector("nav.puntos");
+  escenas.forEach(function(e,i){var x=document.createElement("button");x.type="button";x.textContent=(i+1)+". "+e.t;x.addEventListener("click",function(){ir(i)});nav.appendChild(x)});
+
+  function limpiar(){
+    document.querySelectorAll(".p").forEach(function(b){b.classList.remove("sel","ok","mal","tenue","foco");var t=b.querySelector(".tag");t.className="tag";t.textContent=""});
+    ["gBase","gJer","gPre"].forEach(function(g){$(g).classList.remove("on")});
+  }
+  function tag(k,txt,cl){var t=$("p_"+k).querySelector(".tag");t.textContent=txt;t.className="tag on "+cl}
+  function tenue(lista){Object.keys(P).forEach(function(k){if(lista.indexOf(k)<0)$("p_"+k).classList.add("tenue")})}
+
+  function ficha(k){
+    var d=P[k];
+    $("panel").innerHTML="<h3>"+d.n+"</h3><div>"+d.reg+"</div><div class=\"meta\"><span><b>Quién la aprueba:</b> "+d.org+"</span><span><b>Dónde se publica:</b> "+d.bol+"</span></div>";
+  }
+  function pintarDoc(){
+    if(iDoc>=DOCS.length){
+      $("panel").innerHTML="<h3>Clasificación terminada</h3><div>Has acertado "+aciertos+" de "+DOCS.length+" a la primera. Repasa los que fallaste: casi siempre son el Estatuto de Autonomía, el Estatuto de los Trabajadores, las instrucciones o el anteproyecto.</div><div class=\"btns\"><button type=\"button\" class=\"prim\" id=\"reini\">Volver a empezar</button></div>";
+      $("reini").addEventListener("click",function(){iDoc=0;aciertos=0;intento=0;limpiar();pintarDoc()});
+      return;
+    }
+    var d=DOCS[iDoc];
+    $("panel").innerHTML="<span class=\"marcador\">"+(iDoc+1)+" de "+DOCS.length+" · aciertos a la primera: "+aciertos+"</span><div class=\"doc\"><div class=\"n\">"+(iDoc+1)+"</div><div><div class=\"t\">"+d.t+"</div><div class=\"res\" id=\"res\">Pulsa su peldaño en la escalera.</div></div></div>";
+  }
+  function pulsar(k){
+    if(s===1){limpiar();$("p_"+k).classList.add("sel");ficha(k);return}
+    if(s!==2||iDoc>=DOCS.length)return;
+    var d=DOCS[iDoc]; limpiar();
+    if(d.ok.indexOf(k)>=0){
+      if(intento===0)aciertos++;
+      $("p_"+k).classList.add("ok");
+      $("res").className="res ok";
+      $("res").innerHTML="<b>Correcto.</b> "+d.r+" · "+d.o+(d.b!=="—"?" · "+d.b:"")+(d.x?". "+d.x:".");
+      $("res").innerHTML+=" <button type=\"button\" id=\"sigD\" style=\"font:600 12.5px var(--f-cuerpo);border:1px solid var(--granate);background:var(--granate);color:#fff;border-radius:5px;padding:2px 9px;cursor:pointer\">Siguiente documento →</button>";
+      $("sigD").addEventListener("click",function(){iDoc++;intento=0;limpiar();pintarDoc()});
+      iDocBloq=true;
+    } else {
+      intento++;
+      var el=$("p_"+k); void el.offsetWidth; el.classList.add("mal");
+      $("res").className="res mal";
+      $("res").innerHTML="<b>No es ese peldaño.</b> Piensa quién lo aprueba"+(intento>=2?": "+d.o+".":".")+(intento>=3?" <button type=\"button\" id=\"versol\" style=\"font:600 12.5px var(--f-cuerpo);border:1px solid var(--granate);background:#fff;color:var(--granate);border-radius:5px;padding:2px 8px;cursor:pointer\">Ver la solución</button>":"");
+      if($("versol"))$("versol").addEventListener("click",function(){pulsar(d.ok[0])});
+    }
+  }
+  var iDocBloq=false;
+
+  function pintarCaso(){
+    var c=CASOS[iCaso]; limpiar(); c.p.forEach(function(k){$("p_"+k).classList.add("foco")}); tenue(c.p);
+    var h="<span class=\"marcador\">Caso "+(iCaso+1)+" de "+CASOS.length+"</span><div style=\"padding-right:110px\">"+c.t+"</div><div class=\"btns\" id=\"crit\">";
+    CRIT.forEach(function(k){h+="<button type=\"button\" data-v=\""+k+"\">"+k+"</button>"});
+    h+="</div><div class=\"res\" id=\"resC\"></div>";
+    $("panel").innerHTML=h;
+    $("crit").querySelectorAll("button").forEach(function(b){b.addEventListener("click",function(){
+      var v=b.getAttribute("data-v");
+      if(v===c.ok){
+        $("crit").querySelectorAll("button").forEach(function(x){x.disabled=true});
+        b.className="ok"; $("resC").className="res ok";
+        $("resC").innerHTML="<b>"+c.ok+".</b> "+c.x+(iCaso<CASOS.length-1?" <button type=\"button\" id=\"sigC\" style=\"font:600 12.5px var(--f-cuerpo);border:1px solid var(--granate);background:var(--granate);color:#fff;border-radius:5px;padding:2px 9px;cursor:pointer\">Siguiente caso →</button>":" <b style=\"color:var(--gris)\">Último caso.</b>");
+        if($("sigC"))$("sigC").addEventListener("click",function(){iCaso++;pintarCaso()});
+      } else { b.className="mal"; b.disabled=true; $("resC").className="res mal"; $("resC").innerHTML="<b>No.</b> Fíjate en qué normas están implicadas: ¿están en la misma escalera?"; }
+    })});
+  }
+
+  function pintar(){
+    var e=escenas[s]; document.body.setAttribute("data-s",s);
+    $("num").textContent="Escena "+(s+1)+" de "+escenas.length;
+    $("tit").textContent=e.t;$("preg").textContent=e.p;$("cuerpo").textContent=e.c;$("fuente").textContent="Fuente: "+e.f;
+    $("ant").disabled=s===0;$("sig").disabled=s===escenas.length-1;
+    nav.querySelectorAll("button").forEach(function(x,i){if(i===s)x.setAttribute("aria-current","step");else x.removeAttribute("aria-current")});
+    $("stage").classList.toggle("clic",s===1||s===2);
+    limpiar();
+    if(s===0){$("gBase").classList.add("on");$("panel").innerHTML="<h3>Cómo se lee</h3><div>Las flechas discontinuas no son escalones: indican que el Estado reparte la competencia (Constitución) y fija las bases que la comunidad desarrolla (reales decretos → decretos). Una ley autonómica no está «por debajo» de una ley orgánica estatal.</div>";}
+    if(s===1){$("panel").innerHTML="<h3>Pulsa un peldaño</h3><div>Verás quién aprueba esa norma, qué regula en la Formación Profesional y dónde se publica.</div>";}
+    if(s===2){pintarDoc();}
+    if(s===3){$("gJer").classList.add("on");tag("e2","LOE, art. 41.3.b)","v");tag("e3","RD 556/2012, art. 13.2 ✕","r");tenue(["e2","e3"]);
+      $("panel").innerHTML="<h3>Gana la norma de rango superior del mismo ordenamiento</h3><div>Las dos normas son estatales, así que se comparan por rango. La reforma de la LOE (2020) es además posterior al real decreto (2012), pero el argumento decisivo es la jerarquía: un real decreto posterior que contradijera la LOE tampoco ganaría por ser más reciente. El RD 659/2023 (art. 112.1.a) reitera el acceso directo.</div>";}
+    if(s===4){$("gPre").classList.add("on");tag("e2","LO 3/2022, art. 55","v");tag("e3","RD 659/2023, art. 9","v");tag("a2","Ley 7/2010, art. 70.3 ✕","r");tenue(["e2","e3","a2"]);
+      $("panel").innerHTML="<h3>No es rango: es competencia</h3><div>La ley regional no está derogada y su art. 70.3 sigue publicado, pero en ese apartado cede ante la regulación básica estatal de la formación en empresa. La propia Junta aplica ya el modelo nuevo en el Decreto 79/2024 y la Orden 204/2024, que regulan la formación en empresa y no el módulo. Error típico: clasificarlo como jerarquía.</div>";}
+    if(s===5){iCaso=0;pintarCaso();}
+  }
+  function ir(n){s=Math.max(0,Math.min(escenas.length-1,n));pintar()}
+  $("sig").addEventListener("click",function(){ir(s+1)});
+  $("ant").addEventListener("click",function(){ir(s-1)});
+  document.addEventListener("keydown",function(ev){
+    if(ev.target&&ev.target.tagName==="BUTTON"&&(ev.key===" "||ev.key==="Enter"))return;
+    if(ev.key==="ArrowRight"||ev.key==="PageDown"){ev.preventDefault();ir(s+1)}
+    else if(ev.key==="ArrowLeft"||ev.key==="PageUp"){ev.preventDefault();ir(s-1)}
+    else if(ev.key==="f"||ev.key==="F"){try{if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(function(){})}else{document.exitFullscreen()}}catch(e){}}
+  });
+  function escalar(){var m=$("marco"),stg=$("stage"),w=m.clientWidth,h=m.clientHeight;if(!w||!h)return;var k=Math.min(w/1000,h/640)*.96;stg.style.transform="translate("+((w-1000*k)/2)+"px,"+((h-640*k)/2)+"px) scale("+k+")"}
+  window.addEventListener("resize",escalar);if(window.ResizeObserver)new ResizeObserver(escalar).observe($("marco"));
+  pintar();escalar();
+})();
+</script>
+</body>
+</html>

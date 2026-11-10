@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Las cifras de la formación en empresa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Plan: granate = horas y régimen general; tinta oscura = régimen intensivo; verde = resultados de aprendizaje; ámbar = avisos.
+     Layout: columna de texto + escenario de 1000×640 con una barra del ciclo (2000 h) que persiste entre escenas. */
+  --granate:#A3002F;
+  --granate-claro:#F7E4E9;
+  --intensivo:#3B2A31;
+  --verde:#25695C;
+  --verde-claro:#E1EFEB;
+  --ambar:#B4621B;
+  --tinta:#2A2125;
+  --gris:#6C6266;
+  --linea:#DED6D9;
+  --papel:#FFFFFF;
+  --fondo:#F6F3F4;
+  --f-disp:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;
+  --f-cuerpo:"IBM Plex Sans",Arial,Helvetica,sans-serif;
+  --t:900ms;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--fondo);color:var(--tinta);font-family:var(--f-cuerpo);display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:20px;padding:12px 24px;background:var(--papel);border-bottom:1px solid var(--linea);flex-wrap:wrap}
+.volver{font:600 13px var(--f-cuerpo);color:var(--granate);text-decoration:none;border:1px solid var(--granate);border-radius:999px;padding:4px 11px}
+.volver:hover{background:var(--granate);color:#fff}
+.marca{font-family:var(--f-disp);font-weight:700;color:var(--granate);font-size:15px;letter-spacing:.02em}
+.marca span{color:var(--gris);font-weight:500}
+nav.puntos{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+nav.puntos button{font:500 13px var(--f-cuerpo);border:1px solid var(--linea);background:var(--papel);color:var(--gris);border-radius:999px;padding:5px 11px;cursor:pointer}
+nav.puntos button[aria-current="step"]{background:var(--granate);border-color:var(--granate);color:#fff}
+button:focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
+main{flex:1;display:grid;grid-template-columns:minmax(280px,360px) 1fr;min-height:0}
+aside{padding:28px 26px 20px;display:flex;flex-direction:column;gap:12px;background:var(--papel);border-right:1px solid var(--linea);overflow:auto}
+.num{font-family:var(--f-disp);font-weight:600;color:var(--granate);font-size:15px;letter-spacing:.06em;text-transform:uppercase}
+aside h1{font-family:var(--f-disp);font-weight:700;font-size:40px;line-height:1.02;margin:0;text-wrap:balance}
+.pregunta{font-size:19px;font-style:italic;color:var(--granate);margin:0}
+.cuerpo{font-size:16px;line-height:1.55;margin:0;max-width:62ch}
+.fuente{font-size:12.5px;color:var(--gris);margin-top:auto;border-top:1px solid var(--linea);padding-top:10px;line-height:1.45}
+.ctl{display:flex;gap:8px;align-items:center}
+.ctl button{font:600 14px var(--f-cuerpo);border:1px solid var(--granate);background:var(--papel);color:var(--granate);border-radius:6px;padding:8px 14px;cursor:pointer}
+.ctl button.prim{background:var(--granate);color:#fff}
+.ctl button:disabled{opacity:.35;cursor:default}
+.ctl .paso{font-size:12.5px;color:var(--gris);margin-left:6px;font-variant-numeric:tabular-nums}
+.marco{position:relative;min-height:0;overflow:hidden;cursor:pointer}
+.stage{position:absolute;left:0;top:0;width:1000px;height:640px;transform-origin:0 0}
+.obj{position:absolute;left:0;top:0;width:1000px;height:640px;opacity:0;pointer-events:none;transition:opacity 700ms ease,transform var(--t) cubic-bezier(.6,.05,.25,1)}
+.fade{opacity:0;transform:translateY(8px);transition:opacity 600ms ease,transform 600ms ease}
+.fade.on{opacity:1;transform:none}
+.card{background:var(--papel);border:1px solid var(--linea);border-radius:10px;box-shadow:0 6px 20px rgba(60,20,30,.07);padding:16px 18px}
+.tipo{font:600 12px var(--f-cuerpo);letter-spacing:.08em;text-transform:uppercase;color:var(--gris)}
+.big{font:700 44px/1 var(--f-disp)}
+.n{font-variant-numeric:tabular-nums}
+
+[data-s="0"] #intro{opacity:1}
+[data-s="1"] #ciclo,[data-s="2"] #ciclo,[data-s="3"] #ciclo{opacity:1}
+#p-ley,#p-reg,#p-clm{opacity:0;transition:opacity 600ms}
+[data-s="1"] #p-ley,[data-s="2"] #p-reg,[data-s="3"] #p-clm{opacity:1}
+[data-s="4"] #modulo{opacity:1}
+[data-s="5"] #comp{opacity:1;pointer-events:auto}
+[data-s="6"] #capas{opacity:1}
+
+/* Escena 1 */
+.dos{position:absolute;top:70px;width:440px;height:330px}
+.dos h3{margin:10px 0 6px;font:700 26px/1.1 var(--f-disp)}
+.dos p{margin:0 0 12px;font-size:15px;line-height:1.5}
+.reloj{display:flex;gap:4px;margin-top:14px}
+.reloj i{flex:1;height:26px;border-radius:3px;background:var(--linea)}
+.reloj i.e{background:var(--granate)}
+.ras{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-top:14px}
+.ras i{height:22px;border-radius:50%;background:var(--linea)}
+.ras i.e{background:var(--verde)}
+.base{position:absolute;left:30px;top:430px;width:940px;padding:14px 18px;border-radius:10px;background:var(--papel);border:1px solid var(--linea);font-size:15px;line-height:1.5}
+
+/* Barras de horas */
+.rb{position:absolute;left:50px;width:900px;height:42px;border-radius:6px;background:#E9E4E6;opacity:0;transition:opacity 600ms}
+.rb.on{opacity:1}
+.rb.tenue{opacity:.35}
+#rbG{top:92px}
+#rbI{top:172px}
+.rb .lab{position:absolute;left:0;top:-23px;font:600 14px var(--f-cuerpo);white-space:nowrap}
+.rb .s{position:absolute;left:0;top:0;height:42px;width:0;background:var(--granate);border-radius:6px 0 0 6px;transition:width 900ms cubic-bezier(.6,.05,.25,1);display:flex;align-items:center;padding-left:10px;overflow:hidden}
+.rb .s span{color:#fff;font:600 13px var(--f-cuerpo)}
+.rb .m{position:absolute;top:0;height:42px;width:0;background:#D9A3B3;transition:left 900ms cubic-bezier(.6,.05,.25,1),width 900ms cubic-bezier(.6,.05,.25,1)}
+.rb.int .s{background:var(--intensivo)}
+.rb.int .m{background:#A8979E}
+.rb .m.abierto{background:linear-gradient(90deg,#A8979E,rgba(168,151,158,0))}
+.rb .centro{position:absolute;right:12px;top:12px;font-size:13px;color:var(--gris)}
+.n1{position:absolute;left:230px;top:92px;height:62px;border-left:2px dashed var(--ambar);opacity:0;transition:opacity 600ms}
+.n1 span{position:absolute;left:6px;top:46px;font:600 12.5px var(--f-cuerpo);color:var(--ambar);white-space:nowrap}
+[data-s="1"][data-t="0"] .n1{opacity:1}
+.mitad2{position:absolute;left:500px;top:84px;height:136px;border-left:2px dotted var(--gris)}
+.mitad2 span{position:absolute;left:6px;top:-2px;font-size:12px;color:var(--gris);white-space:nowrap}
+.ticks2{position:absolute;left:50px;top:222px;width:900px;height:16px;font-size:12.5px;color:var(--gris)}
+.ticks2 span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
+.ticks2 span:first-child{transform:none}
+.ticks2 span:last-child{transform:translateX(-100%)}
+.leyenda{position:absolute;left:50px;top:246px;width:900px;font-size:12.5px;color:var(--gris);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.leyenda i{display:inline-block;width:14px;height:10px;border-radius:2px;background:var(--granate)}
+.leyenda i.lm{background:#D9A3B3;margin-left:8px}
+
+.eje-t{position:absolute;left:50px;top:30px;font:600 13px var(--f-cuerpo);text-transform:uppercase;letter-spacing:.07em;color:var(--gris)}
+.barra{position:absolute;left:50px;top:110px;width:900px;height:60px;border-radius:6px;background:#E9E4E6;overflow:visible}
+.tick{position:absolute;top:66px;font-size:12.5px;color:var(--gris);transform:translateX(-50%);white-space:nowrap}
+.tick::before{content:"";position:absolute;left:50%;top:-12px;width:1px;height:8px;background:var(--gris)}
+.zona{position:absolute;top:0;height:60px;opacity:0;transition:opacity 600ms, left 900ms cubic-bezier(.6,.05,.25,1), width 900ms cubic-bezier(.6,.05,.25,1);display:flex;align-items:center;justify-content:center;color:#fff;font:600 13px var(--f-cuerpo);text-align:center;line-height:1.15;padding:0 4px}
+.zona.on{opacity:1}
+.zona.g{background:var(--granate)}
+.zona.i{background:var(--intensivo)}
+.zona.ia{background:linear-gradient(90deg,var(--intensivo),rgba(59,42,49,0))}
+.zona.c{background:var(--granate);box-shadow:0 0 0 3px #fff,0 0 0 5px var(--granate)}
+.mitad{position:absolute;left:450px;top:-6px;height:72px;border-left:2px dotted var(--gris)}
+.mitad span{position:absolute;left:6px;top:-18px;font-size:12px;color:var(--gris);white-space:nowrap}
+.marca25{position:absolute;top:-34px;height:94px;width:0;border-left:3px solid var(--ambar);opacity:0;transition:opacity 600ms}
+.marca25.on{opacity:1}
+.marca25 span{position:absolute;left:8px;top:-2px;font:700 14px var(--f-disp);color:var(--ambar);white-space:nowrap}
+.panel{position:absolute;left:50px;width:900px}
+.fila3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.fila2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.dato .big{color:var(--granate)}
+.dato.int .big{color:var(--intensivo)}
+.dato.ra .big{color:var(--verde)}
+.dato p{margin:6px 0 0;font-size:14px;line-height:1.45}
+.aviso{border-left:4px solid var(--ambar);background:#FBF1E7;border-radius:0 8px 8px 0;padding:12px 16px;font-size:14.5px;line-height:1.5}
+.aviso b{color:var(--ambar)}
+.cursos{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.curso h4{margin:0 0 6px;font:700 18px var(--f-disp)}
+.mini{height:22px;border-radius:4px;background:#E9E4E6;position:relative;margin:8px 0}
+.mini b{position:absolute;top:0;height:22px;border-radius:4px;background:var(--granate)}
+.mini b.claro{background:#D9A3B3}
+
+/* Escena 5: módulo */
+.mod-t{position:absolute;left:50px;top:60px;font:700 26px var(--f-disp)}
+.mod-t span{display:block;font:500 14px var(--f-cuerpo);color:var(--gris)}
+.mbar{position:absolute;left:50px;top:150px;width:845px;height:64px;border-radius:6px;background:#E9E4E6}
+.mbar .emp{position:absolute;left:0;top:0;height:64px;width:0;border-radius:6px 0 0 6px;background:repeating-linear-gradient(135deg,var(--granate) 0 10px,#B9204B 10px 20px);transition:width 1100ms cubic-bezier(.3,.7,.2,1);display:flex;align-items:center;padding-left:12px;color:#fff;font:600 14px var(--f-cuerpo);white-space:nowrap}
+.mbar .tope{position:absolute;top:-28px;height:120px;border-left:3px solid var(--ambar)}
+.mbar .tope span{position:absolute;left:8px;top:0;font:700 14px var(--f-disp);color:var(--ambar);white-space:nowrap}
+.mbar .fin{position:absolute;right:10px;top:21px;font:600 14px var(--f-cuerpo);color:var(--tinta)}
+.chips{display:flex;gap:10px;flex-wrap:wrap}
+.chipm{width:112px;border:1px solid var(--linea);border-radius:8px;background:var(--papel);padding:8px 10px;font-size:13px}
+.chipm b{display:block;font:700 18px var(--f-disp)}
+.chipm .mini{height:12px;margin:6px 0 0}
+.chipm .mini b{height:12px}
+
+/* Escena 6: comparador */
+.toggle{position:absolute;left:50px;top:40px;display:flex;border:1px solid var(--linea);border-radius:999px;background:var(--papel);padding:4px}
+.toggle button{font:600 15px var(--f-cuerpo);border:0;background:transparent;color:var(--gris);border-radius:999px;padding:9px 20px;cursor:pointer}
+.toggle button[aria-pressed="true"]{background:var(--granate);color:#fff}
+[data-reg="intensivo"] .toggle button[aria-pressed="true"]{background:var(--intensivo)}
+.cbar{position:absolute;left:460px;top:30px;width:490px}
+.cbar .mini{height:26px}
+.cbar .mini b{height:26px;transition:left 800ms cubic-bezier(.6,.05,.25,1),width 800ms cubic-bezier(.6,.05,.25,1),background 500ms}
+.cticks{position:relative;height:16px;font-size:12px;color:var(--gris)}
+.cticks span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
+.cticks span:first-child{transform:none}
+.cticks span:last-child{transform:translateX(-100%)}
+.tabla{position:absolute;left:50px;top:110px;width:900px;border-collapse:collapse;background:var(--papel);border-radius:10px;overflow:hidden;box-shadow:0 6px 20px rgba(60,20,30,.07)}
+.tabla th{width:230px;text-align:left;font:600 14px var(--f-cuerpo);padding:12px 14px;border-bottom:1px solid var(--linea);vertical-align:top}
+.tabla td{font-size:14.5px;line-height:1.4;padding:12px 14px;border-bottom:1px solid var(--linea)}
+.tabla tr:last-child th,.tabla tr:last-child td{border-bottom:0}
+.tabla td span{display:block;transition:opacity 350ms}
+.tabla td .vi{display:none}
+[data-reg="intensivo"] .tabla td .vg{display:none}
+[data-reg="intensivo"] .tabla td .vi{display:block}
+
+/* Escena 7: capas */
+.capa{position:absolute;left:50px;width:900px;border-radius:10px;padding:14px 18px;display:grid;grid-template-columns:230px 1fr;gap:18px;align-items:center}
+.capa h3{margin:0;font:700 22px/1.1 var(--f-disp)}
+.capa h3 small{display:block;font:500 13px var(--f-cuerpo);margin-top:4px;opacity:.85}
+.capa ul{margin:0;padding-left:18px;font-size:14.5px;line-height:1.5}
+.capa.l1{top:40px;background:var(--intensivo);color:#fff}
+.capa.l2{top:200px;background:var(--granate);color:#fff;left:80px;width:840px}
+.capa.l3{top:360px;background:var(--granate-claro);color:var(--tinta);left:110px;width:780px;border:1px solid #E8C6D0}
+.capa.l3 h3{color:var(--granate)}
+.clave{position:absolute;left:50px;top:520px;width:900px;padding:14px 18px;border-radius:10px;background:var(--papel);border:2px solid var(--verde);font-size:15px;line-height:1.5}
+.clave b{color:var(--verde)}
+
+
+[data-s="7"] #reparto{opacity:1;pointer-events:auto}
+[data-s="8"] #propuesta{opacity:1}
+.rp-t{position:absolute;left:30px;top:22px;font:700 20px var(--f-disp)}
+.rp-lista{position:absolute;left:30px;top:62px;width:560px;display:flex;flex-direction:column;gap:8px}
+.rp-ra{display:grid;grid-template-columns:1fr auto;align-items:center;gap:10px;background:var(--papel);border:1px solid var(--linea);border-radius:8px;padding:8px 10px}
+.rp-ra b{font-family:var(--f-disp);color:var(--granate);margin-right:6px}
+.rp-ra span{font-size:14px}
+.seg{display:flex;border:1px solid var(--linea);border-radius:999px;overflow:hidden}
+.seg button{font:600 12.5px var(--f-cuerpo);border:0;background:var(--papel);color:var(--gris);padding:7px 11px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--linea)}
+.seg button[aria-pressed="true"][data-v="centro"]{background:var(--tinta);color:#fff}
+.seg button[aria-pressed="true"][data-v="ambos"]{background:#D9A3B3;color:var(--tinta)}
+.seg button[aria-pressed="true"][data-v="empresa"]{background:var(--granate);color:#fff}
+.rp-horas{position:absolute;left:30px;top:430px;width:560px;background:var(--papel);border:1px solid var(--linea);border-radius:8px;padding:12px 14px}
+.rp-horas label{font-size:14.5px}
+.rp-horas label b{font-family:var(--f-disp);font-size:18px;color:var(--granate);font-variant-numeric:tabular-nums}
+.rp-slider{position:relative;margin:10px 0 4px}
+.rp-slider input{width:100%;accent-color:var(--granate)}
+.rp-tope{position:absolute;top:-4px;height:28px;border-left:2px solid var(--ambar)}
+.rp-esc{position:relative;height:16px;font-size:12px;color:var(--gris)}
+.rp-esc span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}
+.rp-esc span:first-child{transform:none}
+.rp-esc span:last-child{transform:translateX(-100%)}
+.rp-checks{position:absolute;left:610px;top:62px;width:360px;min-height:300px}
+.rp-checks ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.rp-checks li{display:grid;grid-template-columns:24px 1fr;gap:8px;font-size:13.5px;line-height:1.4}
+.rp-checks li i{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:700 13px var(--f-cuerpo);font-style:normal;color:#fff}
+.ok i{background:var(--verde)}
+.mal i{background:var(--granate)}
+.avi i{background:var(--ambar)}
+.inf i{background:var(--gris)}
+.rp-checks li small{display:block;color:var(--gris);font-size:12px}
+.rp-btn{margin-top:14px;font:600 13px var(--f-cuerpo);border:1px solid var(--gris);background:var(--papel);color:var(--tinta);border-radius:6px;padding:6px 12px;cursor:pointer}
+.tabla.pr{top:30px}
+.tabla.pr th{width:auto;background:var(--fondo)}
+.tabla.pr td:first-child{width:46px}
+.lug{display:inline-block;font:600 12.5px var(--f-cuerpo);border-radius:999px;padding:3px 10px;white-space:nowrap}
+.lug.amb{background:#D9A3B3;color:var(--tinta)}
+.lug.cen{background:var(--tinta);color:#fff}
+.lug-o{font-size:12.5px;color:var(--gris)}
+.tabla td .lug{display:inline-block}
+.tabla td .lug-o{display:block;margin-top:3px}
+.tres{position:absolute;left:50px;top:440px;width:900px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.tres p{margin:6px 0 0;font-size:14px;line-height:1.45}
+
+@media (max-width:900px){
+  main{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  aside{border-right:0;border-bottom:1px solid var(--linea);padding:18px 16px}
+  aside h1{font-size:30px}
+  .marco{min-height:62vw}
+  header{padding:10px 16px}
+}
+@media (prefers-reduced-motion:reduce){*{transition-duration:1ms !important}}
+</style>
+</head>
+<body data-s="0" data-t="0" data-reg="general">
+<header>
+  <a class="volver" href="../../index.html">← Colección</a>
+  <div class="marca">Temas 5 y 6 · Formación en empresa <span>· Caso guía: Técnico en Vídeo Disc-jockey y Sonido, 2000 h</span></div>
+  <nav class="puntos" aria-label="Escenas"></nav>
+</header>
+<main>
+  <aside aria-live="polite">
+    <div class="num" id="num">Escena 1 de 9</div>
+    <h1 id="tit"></h1>
+    <p class="pregunta" id="preg"></p>
+    <p class="cuerpo" id="cuerpo"></p>
+    <div class="ctl">
+      <button type="button" id="ant">← Anterior</button>
+      <button type="button" id="sig" class="prim">Siguiente →</button>
+      <span class="paso" id="paso"></span>
+    </div>
+    <div class="fuente" id="fuente"></div>
+  </aside>
+  <div class="marco" id="marco" role="img" aria-label="Animación sobre las cifras de la formación en empresa">
+    <div class="stage" id="stage">
+
+      <!-- 1. Dos medidas -->
+      <div class="obj" id="intro">
+        <div class="card dos" style="left:30px">
+          <div class="tipo">Primera medida</div>
+          <h3 style="color:var(--granate)">Horas en la empresa</h3>
+          <p>Qué parte de la <b>duración total del ciclo</b> se pasa en la empresa. Se expresa en porcentaje y, en Castilla-La Mancha, también en horas.</p>
+          <div class="reloj" aria-hidden="true"><i class="e"></i><i class="e"></i><i class="e"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <p style="font-size:13px;color:var(--gris);margin-top:8px">Ejemplo: 3 de cada 12 partes del tiempo, un 25&nbsp;%.</p>
+        </div>
+        <div class="card dos" style="left:530px">
+          <div class="tipo">Segunda medida</div>
+          <h3 style="color:var(--verde)">Resultados de aprendizaje</h3>
+          <p>Qué parte de <b>lo que hay que aprender</b> asume la empresa. Se cuenta sobre los resultados de aprendizaje del conjunto de módulos.</p>
+          <div class="ras" aria-hidden="true"><i class="e"></i><i class="e"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <p style="font-size:13px;color:var(--gris);margin-top:8px">Ejemplo: 2 de cada 10 resultados, un 20&nbsp;%.</p>
+        </div>
+        <div class="base">Las dos se calculan <b>sobre el ciclo completo</b>. Solo hay una cifra que se mira módulo a módulo: en Castilla-La Mancha, la empresa no puede asumir más del 65&nbsp;% de la duración de cada módulo.</div>
+      </div>
+
+      <!-- 2-4. La barra del ciclo -->
+      <div class="obj" id="ciclo">
+        <div class="eje-t">Horas en la empresa, sumadas en todo el ciclo (2000 h)</div>
+        <div class="rb" id="rbG"><div class="lab" id="labG"></div><div class="s" id="sG"><span>mínimo</span></div><div class="m" id="mG"></div><div class="centro">resto: en el centro</div></div>
+        <div class="rb int" id="rbI"><div class="lab" id="labI"></div><div class="s" id="sI"><span>mínimo</span></div><div class="m" id="mI"></div><div class="centro">resto: en el centro</div></div>
+        <div class="n1" id="n1"><span>20&nbsp;% en nivel 1 (400 h)</span></div>
+        <div class="mitad2"><span>mitad del ciclo</span></div>
+        <div class="ticks2">
+          <span style="left:0">0 h</span><span style="left:225px">500 h · 25&nbsp;%</span><span style="left:315px">700 h · 35&nbsp;%</span><span style="left:450px">1000 h · 50&nbsp;%</span><span style="left:900px">2000 h</span>
+        </div>
+        <div class="leyenda"><i class="ls"></i>mínimo obligatorio <i class="lm"></i>margen hasta el máximo · Las barras suman horas: no dicen cuándo se hacen. La estancia se reparte entre los cursos.</div>
+
+        <div class="panel" id="p-ley" style="top:280px">
+          <div class="fila2 fade" data-at="1:1">
+            <div class="card dato"><div class="tipo">Régimen general · LO 3/2022, art. 66</div><div class="big n">25–35&nbsp;%</div><p>De la duración total, en la empresa. Sin contrato de formación. La empresa asume hasta un 20&nbsp;% de los resultados.</p></div>
+            <div class="card dato int"><div class="tipo">Régimen intensivo · LO 3/2022, art. 67</div><div class="big n">más del 35&nbsp;%</div><p>Con contrato de formación. La empresa asume más de un 30&nbsp;% de los resultados o módulos.</p></div>
+          </div>
+        </div>
+
+        <div class="panel" id="p-reg" style="top:280px">
+          <div class="fila2">
+            <div class="card dato"><div class="tipo">Régimen general · horas</div><div class="big n">500–700 h</div><p>Entre el 25&nbsp;% y el 35&nbsp;% de 2000 horas.</p></div>
+            <div class="card dato int"><div class="tipo">Régimen intensivo · horas</div><div class="big n">700–1000 h</div><p>Entre el 35&nbsp;% y el 50&nbsp;%: el reglamento añade el tope.</p></div>
+          </div>
+          <div class="fila2 fade" data-at="2:1" style="margin-top:14px">
+            <div class="card dato ra"><div class="tipo">Resultados de aprendizaje · general</div><div class="big n">10–20&nbsp;%</div><p>De los resultados de los módulos, en la empresa.</p></div>
+            <div class="card dato ra"><div class="tipo">Resultados de aprendizaje · intensivo</div><div class="big n">≥ 30&nbsp;%</div><p>De los resultados de los módulos asociados a estándares.</p></div>
+          </div>
+          <div class="aviso fade" data-at="2:1" style="margin-top:14px"><b>Ley y reglamento no dicen lo mismo con las mismas palabras.</b> La ley pide «más de un 30&nbsp;%» y una duración «superior al 35&nbsp;%»; el reglamento, «al menos el 30&nbsp;%» y «un mínimo del 35». Para programar se aplican el reglamento y la norma autonómica.</div>
+        </div>
+
+        <div class="panel" id="p-clm" style="top:280px">
+          <div class="fila3">
+            <div class="card dato"><div class="tipo">Castilla-La Mancha · régimen general</div><div class="big n">500–580 h</div><p>En grado medio y superior, con carácter general. En un ciclo de 2000 h, entre el 25&nbsp;% y el 29&nbsp;%.</p></div>
+            <div class="card dato"><div class="tipo">Régimen ordinario</div><div class="big" style="font-size:34px">General</div><p>El intensivo es excepcional; si se autoriza, el ciclo puede organizarse en tres cursos.</p></div>
+            <div class="card dato"><div class="tipo">Grado básico</div><div class="big n">400 h</div><p>Con el mismo reparto en primer curso.</p></div>
+          </div>
+          <div class="card fade" data-at="3:1" style="margin-top:14px">
+            <div class="tipo" style="margin-bottom:8px">Reparto por cursos en el caso guía · las dos barras van de 0 a 580 h</div>
+            <div class="cursos">
+              <div class="curso"><h4>Primer curso</h4><div class="mini"><b style="left:0;width:12%"></b><b class="claro" style="left:12%;width:9%"></b></div><span class="n" style="font-size:14px">Entre 70 y 120 h</span></div>
+              <div class="curso"><h4>Segundo curso</h4><div class="mini"><b style="left:0;width:65.5%"></b><b class="claro" style="left:65.5%;width:22.5%"></b></div><span class="n" style="font-size:14px">El resto: entre 380 y 510 h</span></div>
+            </div>
+            <p style="margin:10px 0 0;font-size:13px;color:var(--gris)">La cifra exacta de cada ciclo está en el anexo de su decreto de currículo.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Límite por módulo -->
+      <div class="obj" id="modulo">
+        <div class="mod-t">Módulo 1298 · Instalación y montaje de equipos de sonido<span>169 h en Castilla-La Mancha</span></div>
+        <div class="mbar">
+          <div class="emp" id="emp">Hasta 109 h en la empresa</div>
+          <div class="tope" style="left:549px"><span>65&nbsp;% = 109,85 h</span></div>
+          <div class="fin">169 h</div>
+        </div>
+        <div class="panel" style="top:250px">
+          <div class="fila2">
+            <div class="card dato"><div class="tipo">Como máximo en la empresa</div><div class="big n">109 h</div><p>El 65&nbsp;% de 169 h son 109,85 h: la empresa no puede pasar de ahí.</p></div>
+            <div class="card dato"><div class="tipo">Nunca el módulo entero</div><div class="big" style="font-size:34px">Siempre hay centro</div><p>Ningún módulo se desarrolla íntegramente en la empresa sin el docente responsable.</p></div>
+          </div>
+          <div class="card fade" data-at="4:1" style="margin-top:14px">
+            <div class="tipo" style="margin-bottom:8px">Los resultados se cuentan sobre todo el ciclo · ejemplo ilustrativo, no es un reparto real</div>
+            <div class="chips">
+              <div class="chipm"><b>1298</b>parte en empresa<div class="mini"><b style="width:40%"></b></div></div>
+              <div class="chipm"><b>1299</b>parte en empresa<div class="mini"><b style="width:30%"></b></div></div>
+              <div class="chipm"><b>1300</b>parte en empresa<div class="mini"><b style="width:25%"></b></div></div>
+              <div class="chipm"><b>1301</b>solo en el centro<div class="mini"></div></div>
+              <div class="chipm"><b>1302</b>parte en empresa<div class="mini"><b style="width:35%"></b></div></div>
+              <div class="chipm"><b>1303</b>solo en el centro<div class="mini"></div></div>
+              <div class="chipm"><b>1304</b>parte en empresa<div class="mini"><b style="width:20%"></b></div></div>
+            </div>
+            <p style="margin:10px 0 0;font-size:13.5px;line-height:1.45">Puede haber módulos sin ningún resultado en la empresa; lo que se comprueba en cada módulo es el 65&nbsp;% y que no vaya entero.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Comparador -->
+      <div class="obj" id="comp">
+        <div class="toggle" role="group" aria-label="Elegir régimen">
+          <button type="button" id="bg" aria-pressed="true">Régimen general</button>
+          <button type="button" id="bi" aria-pressed="false">Régimen intensivo</button>
+        </div>
+        <div class="cbar" aria-hidden="true">
+          <div style="font-size:12.5px;color:var(--gris);margin-bottom:4px">Horas en la empresa sobre 2000 h: mínimo y margen</div>
+          <div class="mini"><b id="cb" style="left:0;width:25%"></b><b id="cb2" class="claro" style="left:25%;width:4%"></b></div>
+          
+          <div class="cticks"><span style="left:0">0 h</span><span style="left:25%">500</span><span style="left:50%">1000</span><span style="left:75%">1500</span><span style="left:100%">2000 h</span></div>
+        </div>
+        <table class="tabla">
+          <tr><th>Horas en la empresa</th><td><span class="vg">500–580 h en Castilla-La Mancha (25–29&nbsp;%). El reglamento permite hasta el 35&nbsp;%.</span><span class="vi">700–1000 h (35–50&nbsp;%). En Castilla-La Mancha, el ciclo puede organizarse en tres cursos.</span></td></tr>
+          <tr><th>Resultados en la empresa</th><td><span class="vg">Entre el 10&nbsp;% y el 20&nbsp;%, contados sobre el conjunto del ciclo.</span><span class="vi">Al menos el 30&nbsp;% de los resultados de los módulos asociados a estándares.</span></td></tr>
+          <tr><th>Vínculo con la empresa</th><td><span class="vg">Sin contrato. Puede haber beca; en Castilla-La Mancha debe cubrir al menos los gastos de la estancia.</span><span class="vi">Contrato de formación en alternancia. Hasta el 31/12/2028 cabe beca donde ya se aplicaba.</span></td></tr>
+          <tr><th>Seguridad Social</th><td><span class="vg">Alta por los días de estancia; cotiza la empresa, salvo que el convenio lo atribuya al centro.</span><span class="vi">La del contrato, con protección completa.</span></td></tr>
+          <tr><th>Calendario</th><td><span class="vg">Periodos en cada curso; entre 70 y 120 h en primero.</span><span class="vi">Secuencias de centro y empresa diarias, semanales o mensuales; excepcionalmente, una estancia anual.</span></td></tr>
+          <tr><th>Exención por experiencia</th><td><span class="vg">Posible, con un año de experiencia relacionada en los cinco anteriores.</span><span class="vi">No cabe convalidación ni exención de los periodos en empresa.</span></td></tr>
+          <tr><th>Qué pide a la empresa</th><td><span class="vg">Un tutor o tutora y un puesto formativo.</span><span class="vi">Capacidad de contratar, con topes de contratos por centro de trabajo y de personas por tutor.</span></td></tr>
+        </table>
+      </div>
+
+      <!-- 7. Tres capas -->
+      <div class="obj" id="capas">
+        <div class="capa l1"><h3>Ley Orgánica 3/2022<small>Arts. 55, 66 y 67 · el suelo</small></h3><ul><li>Mínimo del 25&nbsp;% en la empresa (20&nbsp;% en nivel 1)</li><li>General: 25–35&nbsp;% y hasta un 20&nbsp;% de resultados</li><li>Intensivo: más del 35&nbsp;% y más de un 30&nbsp;%, con contrato</li></ul></div>
+        <div class="capa l2"><h3>Real Decreto 659/2023<small>Art. 159 · las horquillas</small></h3><ul><li>General: 25–35&nbsp;% y entre el 10&nbsp;% y el 20&nbsp;% de resultados</li><li>Intensivo: 35–50&nbsp;% y al menos el 30&nbsp;% de resultados</li><li>Grado básico y grado C de nivel 1: general por defecto, desde el 20&nbsp;%</li></ul></div>
+        <div class="capa l3"><h3>Orden 204/2024 (CLM)<small>Arts. 5, 6, 14 y 16 · las horas</small></h3><ul><li>Régimen general como ordinario</li><li>500–580 h en grado medio y superior; 70–120 en primero; 400 h en grado básico</li><li>Máximo del 65&nbsp;% de la duración de cada módulo</li></ul></div>
+        <div class="clave fade" data-at="6:1"><b>Para programar:</b> se aplican el reglamento y la norma autonómica, que concretan la ley sin contradecirla. La cifra exacta de horas del ciclo se comprueba siempre en el anexo de su decreto de currículo.</div>
+      </div>
+
+      <!-- 8. Reparto interactivo -->
+      <div class="obj" id="reparto">
+        <div class="rp-t">Módulo 1298 · 5 resultados de aprendizaje · 169 h en Castilla-La Mancha</div>
+        <div class="rp-lista" id="rpLista"></div>
+        <div class="rp-horas">
+          <label for="horas">Horas del módulo en la empresa: <b id="horasV">0 h</b></label>
+          <div class="rp-slider"><input type="range" id="horas" min="0" max="169" step="1" value="0"><span class="rp-tope" style="left:calc(8px + (100% - 16px) * .65)"></span></div>
+          <div class="rp-esc"><span style="left:0">0 h</span><span style="left:calc(8px + (100% - 16px) * .65)">109 h (65&nbsp;%)</span><span style="left:100%">169 h</span></div>
+        </div>
+        <div class="rp-checks card" id="rpChecks"><div class="tipo" style="margin-bottom:8px">Comprobaciones</div><ul id="rpUl"></ul><button type="button" id="rpReset" class="rp-btn">Empezar de nuevo</button></div>
+      </div>
+
+      <!-- 9. Propuesta razonada -->
+      <div class="obj" id="propuesta">
+        <table class="tabla pr">
+          <tr><th>RA</th><th>Resultado (síntesis)</th><th>Dónde</th><th>Por qué</th></tr>
+          <tr><td><b>1</b></td><td>Montaje de los equipos de sonido</td><td><span class="lug amb">Centro y empresa</span></td><td>Fundamentos y seguridad en el aula-taller; montajes reales en espectáculos</td></tr>
+          <tr><td><b>2</b></td><td>Preinstalación eléctrica</td><td><span class="lug cen">Centro</span></td><td>Riesgo eléctrico: se cierra antes de la estancia, con la formación preventiva</td></tr>
+          <tr><td><b>3</b></td><td>Tendido y recogida del cableado</td><td><span class="lug amb">Centro y empresa</span></td><td>Se perfecciona con el ritmo y las condiciones de un montaje real</td></tr>
+          <tr><td><b>4</b></td><td>Conexión y comprobación</td><td><span class="lug amb">Centro y empresa</span></td><td>Equipos y configuraciones que el centro no tiene</td></tr>
+          <tr><td><b>5</b></td><td>Mantenimiento preventivo</td><td><span class="lug cen">Centro</span> <span class="lug-o">o ambos</span></td><td>Depende de que la empresa tenga parque de equipos propio (empresas de alquiler)</td></tr>
+        </table>
+        <div class="tres fade" data-at="8:1">
+          <div class="card"><div class="tipo">En cada módulo</div><p>No más del 65&nbsp;% de su duración en la empresa (109 h en el 1298) y nunca el módulo entero.</p></div>
+          <div class="card"><div class="tipo">En el conjunto del ciclo</div><p>El porcentaje de resultados (entre el 10&nbsp;% y el 20&nbsp;% en régimen general) se calcula sobre todos los módulos.</p></div>
+          <div class="card"><div class="tipo">Antes de la estancia</div><p>16 años cumplidos y la formación en prevención de riesgos superada, en el centro.</p></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+<script>
+(function(){
+  var escenas=[
+    {t:"Dos medidas distintas",p:"¿De qué hablan tantos porcentajes?",c:"Las normas miden la formación en empresa de dos maneras. Una cuenta tiempo: qué parte de la duración del ciclo se pasa en la empresa. La otra cuenta aprendizaje: qué parte de los resultados de aprendizaje se trabaja allí. Mezclarlas es lo que más confunde.",f:"LO 3/2022, arts. 55, 66 y 67; RD 659/2023, art. 159; Orden 204/2024 de Castilla-La Mancha, art. 14.4.",n:1},
+    {t:"La ley pone el suelo",p:"¿Cuánto tiempo, como mínimo?",c:"La Ley Orgánica 3/2022 exige que al menos el 25 % de la duración total se haga en la empresa: en un ciclo de 2000 horas, 500. En ofertas de nivel 1 puede bajar al 20 %. Además distingue dos regímenes: general, entre el 25 % y el 35 %, e intensivo, por encima del 35 %.",f:"LO 3/2022, arts. 55.5, 66 y 67.",n:2},
+    {t:"El reglamento pone las horquillas",p:"¿Y cuánto como máximo?",c:"El Real Decreto 659/2023 cierra los intervalos: general, entre el 25 % y el 35 %; intensivo, entre el 35 % y el 50 %. También fija la parte de resultados de aprendizaje que asume la empresa: entre el 10 % y el 20 % en general, al menos el 30 % en intensivo.",f:"RD 659/2023, art. 159; LO 3/2022, arts. 66 y 67.",n:2},
+    {t:"Castilla-La Mancha fija las horas",p:"¿Cuántas horas tendrá mi ciclo?",c:"La Orden 204/2024 hace del régimen general el ordinario y fija, con carácter general, entre 500 y 580 horas en la empresa en grado medio y superior. De ellas, entre 70 y 120 se hacen en primero. La cifra exacta de cada ciclo está en el anexo de su decreto de currículo.",f:"Orden 204/2024 de Castilla-La Mancha, arts. 5, 6, 7 y 16.",n:2},
+    {t:"El límite de cada módulo",p:"¿Puede irse un módulo entero a la empresa?",c:"No. En Castilla-La Mancha la empresa puede asumir como mucho el 65 % de la duración de cada módulo, y ningún módulo se desarrolla entero fuera del centro. El porcentaje de resultados, en cambio, se cuenta sobre todo el ciclo.",f:"Orden 204/2024, arts. 5.2, 6.3 y 14.4; RD 659/2023, art. 9.3. Horas del módulo 1298: Decreto 100/2014 de Castilla-La Mancha.",n:2},
+    {t:"General o intensivo",p:"¿Qué cambia de un régimen a otro?",c:"Usa los botones para comparar. El régimen no cambia el título ni la modalidad: cambia cuánto tiempo y cuántos resultados se trabajan en la empresa y con qué vínculo. Lo que identifica el intensivo es el contrato de formación, no la beca.",f:"LO 3/2022, arts. 66 y 67; RD 659/2023, arts. 159 y 161; Orden 204/2024, arts. 7, 14.6, 31, 45 y 46; RD 1065/2025.",n:1},
+    {t:"Tres capas de norma",p:"¿Qué cifra aplico al programar?",c:"La ley marca los umbrales que no se pueden saltar. El reglamento los convierte en horquillas. La orden autonómica fija las horas y el límite por módulo.",f:"LO 3/2022; RD 659/2023; Orden 204/2024 de Castilla-La Mancha.",n:2},
+    {t:"Reparte el módulo 1298",p:"¿Qué se aprende en el centro y qué en la empresa?",c:"Asigna cada resultado de aprendizaje al centro, a la empresa o a ambos, y decide cuántas horas del módulo se harán en la empresa. Las comprobaciones de la derecha cambian con cada decisión. No hay una única respuesta correcta: hay repartos que incumplen la norma y repartos mejor o peor razonados.",f:"RD 659/2023, arts. 9 y 158; LO 3/2022, art. 57; Orden 204/2024, art. 14.4; RD 556/2012, anexo I.",n:1},
+    {t:"Una propuesta razonada",p:"¿Qué gana cada resultado en la empresa?",c:"La empresa aporta lo que el aula-taller no puede reproducir: montajes reales, ritmo de trabajo y equipos que el centro no tiene. Lo que entraña más riesgo se cierra antes en el centro. Es una propuesta didáctica, no normativa: el reparto definitivo lo decide el equipo docente y se recoge en el plan de formación.",f:"Propuesta didáctica de los apuntes del Tema 5. Resultados según el RD 556/2012, anexo I. Límites: Orden 204/2024, arts. 5.2, 6.3 y 14.4; RD 659/2023, arts. 9.3 y 158.",n:2}
+  ];
+  var b=document.body,s=0,t=0,$=function(i){return document.getElementById(i)};
+  var nav=document.querySelector("nav.puntos");
+  escenas.forEach(function(e,i){var x=document.createElement("button");x.type="button";x.textContent=(i+1)+". "+e.t;x.addEventListener("click",function(ev){ev.stopPropagation();ir(i,0)});nav.appendChild(x)});
+  function regimen(r){
+    b.setAttribute("data-reg",r);
+    $("bg").setAttribute("aria-pressed",r==="general"?"true":"false");
+    $("bi").setAttribute("aria-pressed",r==="intensivo"?"true":"false");
+    var cb=$("cb"),cb2=$("cb2"); if(r==="general"){cb.style.width="25%";cb.style.background="var(--granate)";cb2.style.left="25%";cb2.style.width="4%";cb2.style.background="#D9A3B3"} else {cb.style.width="35%";cb.style.background="var(--intensivo)";cb2.style.left="35%";cb2.style.width="15%";cb2.style.background="#A8979E"}
+  }
+  $("bg").addEventListener("click",function(ev){ev.stopPropagation();regimen("general")});
+  $("bi").addEventListener("click",function(ev){ev.stopPropagation();regimen("intensivo")});
+  $("comp").addEventListener("click",function(ev){ev.stopPropagation()});
+
+  var px=function(h){return (h*0.45)+"px"};
+  function barra(id,on,lab,min,max,abierto,tenue){
+    var rb=$("rb"+id); rb.classList.toggle("on",on); rb.classList.toggle("tenue",!!tenue);
+    $("lab"+id).textContent=lab||""; $("s"+id).style.width=on?px(min):"0px";
+    var m=$("m"+id); m.style.left=px(min); m.style.width=on?px(max-min):"0px"; m.classList.toggle("abierto",!!abierto);
+  }
+  function barras(){
+    if(s===1&&t===0){barra("G",true,"Ley: toda oferta dual, al menos 500 h (25 %)",500,500);barra("I",false);}
+    else if(s===1){barra("G",true,"Régimen general (ley, art. 66): entre 500 y 700 h",500,700);barra("I",true,"Régimen intensivo (ley, art. 67): más de 700 h; la ley no fija tope",700,1150,true);}
+    else if(s===2){barra("G",true,"Régimen general (reglamento): entre 500 y 700 h",500,700);barra("I",true,"Régimen intensivo (reglamento): entre 700 y 1000 h, tope del 50 %",700,1000);}
+    else if(s===3){barra("G",true,"Castilla-La Mancha, régimen general: entre 500 y 580 h",500,580);barra("I",true,"Intensivo: excepcional en la región; horquilla del reglamento",700,1000,false,true);}
+    else {barra("G",false);barra("I",false);}
+  }
+
+  var RAS=[["1","Montaje de los equipos de sonido"],["2","Preinstalación eléctrica"],["3","Tendido y recogida del cableado"],["4","Conexión y comprobación"],["5","Mantenimiento preventivo"]];
+  var rep=["centro","centro","centro","centro","centro"];
+  var lista=$("rpLista");
+  RAS.forEach(function(r,i){
+    var d=document.createElement("div");d.className="rp-ra";
+    d.innerHTML='<span><b>RA '+r[0]+'</b>'+r[1]+'</span><div class="seg" role="group" aria-label="Dónde se trabaja el RA '+r[0]+'"><button type="button" data-v="centro">Centro</button><button type="button" data-v="ambos">Ambos</button><button type="button" data-v="empresa">Empresa</button></div>';
+    d.querySelectorAll("button").forEach(function(bt){bt.addEventListener("click",function(ev){ev.stopPropagation();rep[i]=bt.getAttribute("data-v");comprobar()})});
+    lista.appendChild(d);
+  });
+  $("reparto").addEventListener("click",function(ev){ev.stopPropagation()});
+  $("horas").addEventListener("input",comprobar);
+  $("horas").addEventListener("pointerup",function(){this.blur()});
+  $("rpReset").addEventListener("click",function(ev){ev.stopPropagation();rep=["centro","centro","centro","centro","centro"];$("horas").value=0;comprobar()});
+  function li(cl,sim,txt,sub){return '<li class="'+cl+'"><i>'+sim+'</i><span>'+txt+(sub?'<small>'+sub+'</small>':'')+'</span></li>'}
+  function comprobar(){
+    lista.querySelectorAll(".rp-ra").forEach(function(d,i){d.querySelectorAll("button").forEach(function(bt){bt.setAttribute("aria-pressed",bt.getAttribute("data-v")===rep[i]?"true":"false")})});
+    var h=+$("horas").value;$("horasV").textContent=h+" h";
+    var enEmp=rep.filter(function(v){return v!=="centro"}).length, todoEmp=rep.every(function(v){return v==="empresa"});
+    var out="";
+    out+= todoEmp?li("mal","✕","El módulo entero va a la empresa.","Ningún módulo se desarrolla íntegramente en la empresa (RD 659/2023, art. 9.3)."):li("ok","✓","Parte del módulo se trabaja en el centro.","");
+    out+= h>109?li("mal","✕","Más de 109 h en la empresa.","El límite es el 65 % de 169 h (Orden 204/2024, art. 14.4)."):li("ok","✓","Horas en la empresa dentro del límite del 65 %.","Máximo: 109 h.");
+    if(rep[1]!=="centro") out+=li("avi","!","La preinstalación eléctrica sale del centro.","Criterio didáctico: el riesgo eléctrico conviene cerrarlo antes de la estancia, junto con la formación preventiva.");
+    if(enEmp>0&&h===0) out+=li("avi","!","Hay resultados en la empresa, pero 0 horas.","Asigna horas a la estancia o devuelve esos resultados al centro.");
+    if(enEmp===0&&h>0) out+=li("avi","!","Hay horas en la empresa, pero ningún resultado.","La estancia no tiene currículo propio: sirve a resultados de los módulos (RD 659/2023, art. 9.1).");
+    if(enEmp===0&&h===0) out+=li("inf","i","Todo en el centro.","Es posible: el porcentaje de resultados se cuenta sobre el ciclo y puede haber módulos sin estancia.");
+    out+=li("inf","i","El 10–20 % de resultados no se comprueba aquí.","Se calcula sobre todos los módulos del ciclo, no sobre uno solo.");
+    $("rpUl").innerHTML=out;
+  }
+  comprobar();
+  function pintar(){
+    b.setAttribute("data-s",s);b.setAttribute("data-t",t);
+    var e=escenas[s];
+    $("num").textContent="Escena "+(s+1)+" de "+escenas.length;
+    $("tit").textContent=e.t;$("preg").textContent=e.p;$("cuerpo").textContent=e.c;$("fuente").textContent="Fuente: "+e.f;
+    $("paso").textContent=e.n>1?("Paso "+(t+1)+" de "+e.n):"";
+    $("ant").disabled=(s===0&&t===0);$("sig").disabled=(s===escenas.length-1&&t===e.n-1);
+    nav.querySelectorAll("button").forEach(function(x,i){if(i===s)x.setAttribute("aria-current","step");else x.removeAttribute("aria-current")});
+    document.querySelectorAll("[data-at]").forEach(function(el){var p=el.getAttribute("data-at").split(":");el.classList.toggle("on",+p[0]===s&&t>=+p[1])});
+    $("emp").style.width=(s===4)?"549px":"0px";
+    barras();
+    if(s!==5)regimen("general");
+  }
+  function ir(ns,nt){s=Math.max(0,Math.min(escenas.length-1,ns));t=Math.max(0,Math.min(escenas[s].n-1,nt));pintar()}
+  function sig(){if(t<escenas[s].n-1){t++;pintar()}else if(s<escenas.length-1){ir(s+1,0)}}
+  function ant(){if(t>0){t--;pintar()}else if(s>0){ir(s-1,escenas[s-1].n-1)}}
+  window._sig=sig;window._reg=regimen;
+  $("sig").addEventListener("click",function(ev){ev.stopPropagation();sig()});
+  $("ant").addEventListener("click",function(ev){ev.stopPropagation();ant()});
+  $("marco").addEventListener("click",sig);
+  document.addEventListener("keydown",function(ev){
+    if(ev.target.tagName==="INPUT")return;
+    if(ev.key==="ArrowRight"||ev.key===" "||ev.key==="PageDown"){if(ev.target.tagName==="BUTTON"&&ev.key===" ")return;ev.preventDefault();sig()}
+    else if(ev.key==="ArrowLeft"||ev.key==="PageUp"){ev.preventDefault();ant()}
+    else if(ev.key==="Home"){ir(0,0)}
+    else if((ev.key==="g"||ev.key==="G")&&s===5){regimen("general")}
+    else if((ev.key==="i"||ev.key==="I")&&s===5){regimen("intensivo")}
+    else if(ev.key==="f"||ev.key==="F"){try{if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(function(){})}else{document.exitFullscreen()}}catch(e){}}
+  });
+  function escalar(){var m=$("marco"),st=$("stage"),w=m.clientWidth,h=m.clientHeight;if(!w||!h)return;var k=Math.min(w/1000,h/640)*.96;st.style.transform="translate("+((w-1000*k)/2)+"px,"+((h-640*k)/2)+"px) scale("+k+")"}
+  window.addEventListener("resize",escalar);if(window.ResizeObserver)new ResizeObserver(escalar).observe($("marco"));
+  pintar();escalar();
+})();
+</script>
+</body>
+</html>

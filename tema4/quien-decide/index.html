@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¿Quién decide? Del BOE al aula</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --granate:#A3002F; --granate-claro:#F7E4E9;
+  --estado:#35577A; --estado-claro:#E3EBF3;
+  --clm:#B4621B; --clm-claro:#FBF1E7;
+  --verde:#25695C; --verde-claro:#E1EFEB;
+  --rojo:#B3261E; --rojo-claro:#FBE9E7;
+  --tinta:#2A2125; --gris:#6C6266; --linea:#DED6D9; --papel:#FFFFFF; --fondo:#F6F3F4;
+  --f-disp:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;
+  --f-cuerpo:"IBM Plex Sans",Arial,Helvetica,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--fondo);color:var(--tinta);font-family:var(--f-cuerpo);display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:20px;padding:12px 24px;background:var(--papel);border-bottom:1px solid var(--linea);flex-wrap:wrap}
+.volver{font:600 13px var(--f-cuerpo);color:var(--granate);text-decoration:none;border:1px solid var(--granate);border-radius:999px;padding:4px 11px}
+.volver:hover{background:var(--granate);color:#fff}
+.marca{font-family:var(--f-disp);font-weight:700;color:var(--granate);font-size:15px;letter-spacing:.02em}
+.marca span{color:var(--gris);font-weight:500}
+nav.puntos{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+nav.puntos button{font:500 13px var(--f-cuerpo);border:1px solid var(--linea);background:var(--papel);color:var(--gris);border-radius:999px;padding:5px 11px;cursor:pointer}
+nav.puntos button[aria-current="step"]{background:var(--granate);border-color:var(--granate);color:#fff}
+button:focus-visible{outline:3px solid var(--clm);outline-offset:2px}
+main{flex:1;display:grid;grid-template-columns:minmax(280px,360px) 1fr;min-height:0}
+aside{padding:28px 26px 20px;display:flex;flex-direction:column;gap:12px;background:var(--papel);border-right:1px solid var(--linea);overflow:auto}
+.num{font-family:var(--f-disp);font-weight:600;color:var(--granate);font-size:15px;letter-spacing:.06em;text-transform:uppercase}
+aside h1{font-family:var(--f-disp);font-weight:700;font-size:38px;line-height:1.04;margin:0;text-wrap:balance}
+.pregunta{font-size:19px;font-style:italic;color:var(--granate);margin:0}
+.cuerpo{font-size:16px;line-height:1.55;margin:0;max-width:62ch}
+.fuente{font-size:12.5px;color:var(--gris);margin-top:auto;border-top:1px solid var(--linea);padding-top:10px;line-height:1.45}
+.ctl{display:flex;gap:8px;align-items:center}
+.ctl button{font:600 14px var(--f-cuerpo);border:1px solid var(--granate);background:var(--papel);color:var(--granate);border-radius:6px;padding:8px 14px;cursor:pointer}
+.ctl button.prim{background:var(--granate);color:#fff}
+.ctl button:disabled{opacity:.35;cursor:default}
+.marco{position:relative;min-height:0;overflow:hidden}
+.stage{position:absolute;left:0;top:0;width:1000px;height:640px;transform-origin:0 0}
+.obj{position:absolute;left:0;top:0;width:1000px;height:640px;opacity:0;pointer-events:none;transition:opacity 500ms ease}
+.obj.on{opacity:1;pointer-events:auto}
+.bt{font:600 13.5px var(--f-cuerpo);border:1px solid var(--granate);background:var(--papel);color:var(--granate);border-radius:6px;padding:6px 12px;cursor:pointer}
+.bt.prim{background:var(--granate);color:#fff}
+.bt.ok{background:var(--verde);border-color:var(--verde);color:#fff}
+.bt.mal{background:var(--rojo);border-color:var(--rojo);color:#fff}
+.bt:disabled{cursor:default}
+.res b.ok{color:var(--verde)} .res b.mal{color:var(--rojo)}
+@media (max-width:900px){
+  main{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  aside{border-right:0;border-bottom:1px solid var(--linea);padding:18px 16px}
+  aside h1{font-size:30px}
+  .marco{min-height:62vw}
+  header{padding:10px 16px}
+}
+@media (prefers-reduced-motion:reduce){*{transition-duration:1ms !important;animation:none !important}}
+
+
+/* Escena 0: cadena */
+.cad{position:absolute;left:30px;top:20px;width:380px;display:flex;flex-direction:column;gap:6px}
+.esl{position:relative;text-align:left;border:1px solid;border-radius:9px;padding:9px 13px;font:inherit;color:var(--tinta);cursor:pointer;min-height:66px}
+.esl b{display:block;font:700 15.5px var(--f-disp)}
+.esl span{display:block;font-size:12.5px;color:var(--gris);margin-top:2px}
+.esl.e{background:var(--estado-claro);border-color:#B9CBDD}
+.esl.a{background:var(--clm-claro);border-color:#E8C9A8}
+.esl.c{background:#EEEAEC;border-color:#D3CBCF}
+.esl[aria-pressed="true"]{box-shadow:0 0 0 3px var(--granate)}
+.esl+.esl::before{content:"";position:absolute;left:50%;top:-7px;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid #9A8F94;transform:translateX(-50%)}
+.detc{position:absolute;left:440px;top:20px;width:530px;background:var(--papel);border:1px solid var(--linea);border-radius:12px;padding:18px 22px;min-height:320px}
+.detc .quien{font:600 12px var(--f-cuerpo);letter-spacing:.08em;text-transform:uppercase;color:var(--gris)}
+.detc h3{margin:4px 0 12px;font:700 23px/1.15 var(--f-disp)}
+.fija,.nopuede{border-radius:8px;padding:10px 14px;font-size:15px;line-height:1.5;margin-top:10px}
+.fija{background:var(--verde-claro);border-left:4px solid var(--verde)}
+.nopuede{background:var(--rojo-claro);border-left:4px solid var(--rojo)}
+.fija b{color:var(--verde)} .nopuede b{color:var(--rojo)}
+.idea0{position:absolute;left:440px;top:420px;width:530px;background:var(--papel);border-left:5px solid var(--granate);border-radius:6px;padding:12px 16px;font-size:15px;line-height:1.5}
+/* Escena 1: clasificador */
+.item{position:absolute;left:30px;top:20px;width:940px;background:var(--papel);border:1px solid var(--linea);border-radius:12px;padding:14px 18px;box-shadow:0 8px 22px rgba(60,20,30,.08);min-height:118px}
+.item .n{font:600 12px var(--f-cuerpo);letter-spacing:.08em;text-transform:uppercase;color:var(--gris)}
+.item .q{font:600 19px/1.35 var(--f-cuerpo);margin:6px 0 6px}
+.item .res{font-size:14px;line-height:1.45}
+.cols{position:absolute;left:30px;top:156px;width:940px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.col{border-radius:10px;border:1px solid var(--linea);background:var(--papel);min-height:466px;display:flex;flex-direction:column}
+.col>button{font:700 17px var(--f-disp);border:0;border-radius:10px 10px 0 0;padding:12px 10px 10px;cursor:pointer;color:#fff;text-align:left}
+.col>button small{display:block;font:500 12px var(--f-cuerpo);opacity:.9;margin-top:2px}
+.col .chips{padding:8px;display:flex;flex-direction:column;gap:6px}
+.col .chip{font-size:12.5px;line-height:1.35;border-radius:6px;padding:6px 8px;background:var(--fondo)}
+.col.mal{animation:sacude 380ms}
+@keyframes sacude{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+/* Escena 2: tres territorios */
+.terr{position:absolute;left:30px;top:24px;width:940px}
+.terr h3{margin:0 0 4px;font:700 19px var(--f-disp)}
+.terr .sub{font-size:13.5px;color:var(--gris);margin:0 0 30px}
+.fila{display:grid;grid-template-columns:190px 1fr;align-items:center;gap:14px;margin-bottom:14px}
+.fila .et{font:700 15.5px var(--f-disp);line-height:1.2}
+.fila .et small{display:block;font:500 12px var(--f-cuerpo);color:var(--gris)}
+.pista{position:relative;height:40px;background:var(--fondo);border-radius:6px}
+.barra{position:absolute;left:0;top:0;bottom:0;border-radius:6px;display:flex;align-items:center;justify-content:flex-end;padding-right:10px;color:#fff;font:700 15px var(--f-disp);transition:width 900ms ease}
+.base{position:absolute;top:-8px;bottom:-8px;width:0;border-left:2px dashed var(--granate)}
+.base span{position:absolute;top:-16px;left:4px;font:600 11.5px var(--f-cuerpo);color:var(--granate);white-space:nowrap}
+.escala{display:grid;grid-template-columns:190px 1fr;gap:14px;font-size:11.5px;color:var(--gris)}
+.escala div{position:relative;height:16px}
+.escala i{position:absolute;font-style:normal;transform:translateX(-50%);white-space:nowrap}
+.tabla3{position:absolute;left:30px;top:356px;width:940px;border-collapse:collapse;font-size:14px;background:var(--papel);border-radius:10px;overflow:hidden}
+.tabla3 th,.tabla3 td{border-bottom:1px solid var(--linea);padding:9px 12px;text-align:left;vertical-align:top;line-height:1.4}
+.tabla3 th{background:#EFEAEC;font:700 14px var(--f-disp)}
+.tabla3 tr:last-child td{border-bottom:0}
+.tabla3 td.igual{background:var(--verde-claro)}
+/* Escena 3: ejemplo resuelto */
+.situ{position:absolute;left:30px;top:20px;width:940px;background:var(--papel);border:1px solid var(--linea);border-radius:12px;padding:14px 18px;font-size:16px;line-height:1.5}
+.situ b{color:var(--granate)}
+.cuad{position:absolute;left:30px;top:150px;width:940px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cu{background:var(--papel);border:1px solid var(--linea);border-radius:10px;padding:12px 16px;font-size:14.5px;line-height:1.5;min-height:150px;border-top:5px solid}
+.cu h4{margin:0 0 6px;font:700 17px var(--f-disp)}
+.cu.n{border-top-color:var(--estado)} .cu.s{border-top-color:var(--verde)} .cu.x{border-top-color:var(--rojo)} .cu.i{border-top-color:var(--clm)}
+.cierre{position:absolute;left:30px;top:510px;width:940px;padding:12px 16px;border-radius:8px;background:var(--granate-claro);border-left:5px solid var(--granate);font-size:15px;line-height:1.5}
+
+</style>
+</head>
+<body data-s="0">
+<header>
+  <a class="volver" href="../../index.html">← Colección</a>
+  <div class="marca">Tema 4 · ¿Quién decide? <span>· Caso guía: Técnico en Vídeo Disc-jockey y Sonido</span></div>
+  <nav class="puntos" aria-label="Escenas"></nav>
+</header>
+<main>
+  <aside aria-live="polite">
+    <div class="num" id="num"></div>
+    <h1 id="tit"></h1>
+    <p class="pregunta" id="preg"></p>
+    <p class="cuerpo" id="cuerpo"></p>
+    <div class="ctl">
+      <button type="button" id="ant">← Anterior</button>
+      <button type="button" id="sig" class="prim">Siguiente →</button>
+    </div>
+    <div class="fuente" id="fuente"></div>
+  </aside>
+  <div class="marco" id="marco">
+    <div class="stage" id="stage">
+
+      <div class="obj" data-e="0">
+        <div class="cad" id="cad"></div>
+        <div class="detc" id="detc"></div>
+        <div class="idea0">Cada escalón concreta el anterior, pero no puede cambiar lo que el anterior ha fijado.</div>
+      </div>
+      <div class="obj" data-e="1">
+        <div class="item"><div class="n" id="iN"></div><div class="q" id="iQ"></div><div class="res" id="iRes">Pulsa la columna de quien lo decide.</div></div>
+        <div class="cols" id="cols"></div>
+      </div>
+      <div class="obj" data-e="2">
+        <div class="terr">
+          <h3>Módulo 1298, Instalación y montaje de equipos de sonido: horas en cada territorio</h3>
+          <p class="sub">Las barras empiezan en cero. La línea discontinua marca la duración básica que fija el Estado y que ninguna administración puede rebajar.</p>
+          <div id="filas"></div>
+          <div class="escala"><span></span><div id="esc"></div></div>
+        </div>
+        <table class="tabla3">
+          <tr><th style="width:190px"></th><th>Ámbito del ministerio</th><th>Castilla-La Mancha</th><th>Comunidad de Madrid</th></tr>
+          <tr><td><b>Resultados de aprendizaje y criterios</b></td><td class="igual" colspan="3">Idénticos en los tres: los fija el Estado en el RD 556/2012, modificado por el RD 499/2024.</td></tr>
+          <tr><td><b>Norma del currículo</b></td><td>Orden EFD/657/2024</td><td>Decreto 100/2014, modificado por el Decreto 79/2024</td><td>Decreto de currículo propio de la comunidad</td></tr>
+          <tr><td><b>Formación en empresa, régimen general</b></td><td>500 h; entre 120 y 240 en primero</td><td>Entre 500 y 580 h; entre 70 y 120 en primero</td><td>Lo fija su normativa</td></tr>
+          <tr><td><b>Evaluación</b></td><td>Normativa del ministerio</td><td>Orden 201/2024, modificada por la Orden 55/2026</td><td>Normativa de la comunidad</td></tr>
+        </table>
+      </div>
+      <div class="obj" data-e="3">
+        <div class="situ"><b>La situación.</b> Un estudiante de primero pierde en febrero el derecho a la evaluación continua en el módulo 1298. La programación heredada preveía «un examen final». ¿Qué le corresponde, y qué puede decidir el docente?</div>
+        <div class="cuad">
+          <div class="cu n"><h4>Norma aplicable</h4>Art. 3, apartados 6 y 7, de la Orden 201/2024, en la redacción de la Orden 55/2026. No la redacción original ni la programación heredada.</div>
+          <div class="cu s"><h4>Qué le corresponde</h4>Pruebas objetivas antes de cada sesión de evaluación ordinaria, que comprenden todos los resultados de aprendizaje del módulo a través de sus criterios. No conserva las calificaciones parciales anteriores.</div>
+          <div class="cu x"><h4>Qué no puede hacer</h4>Las actividades prácticas y pruebas que el equipo docente considere de riesgo. El primer resultado del módulo incluye la carga y descarga de equipos y el cálculo de cargas para suspenderlos (RD 556/2012, anexo I, criterios a y f): la programación debe prever cómo evaluarlos sin exponerle a ese riesgo.</div>
+          <div class="cu i"><h4>Qué no se puede inventar</h4>El umbral de faltas que hace perder el derecho, los porcentajes de calificación o la forma de la prueba. Se toman de la norma y de los documentos del centro, y se anotan con su fuente.</div>
+        </div>
+        <div class="cierre"><b>Dónde está el margen del docente:</b> no en el qué (resultados, criterios, reglas de evaluación), sino en el cómo: qué pruebas diseña para cubrir todos los resultados, con qué instrumentos y cómo evalúa los criterios de riesgo de otra manera.</div>
+      </div>
+
+    </div>
+  </div>
+</main>
+<script>
+(function(){
+  var ESC=[
+  {t:"La cadena normativa",p:"¿Qué concreta cada escalón y qué no puede cambiar?",c:"La cadena va de la ley a la programación del departamento y al plan de formación de cada estudiante. Pulsa cada eslabón. En verde, lo que fija; en rojo, lo que no puede tocar.",f:"Tema 4, figura «Cadena normativa del ciclo de Vídeo Disc-jockey y Sonido en Castilla-La Mancha»."},
+  {t:"¿Quién lo decide?",p:"Estado, comunidad, centro o docente",c:"Diez decisiones del día a día de un ciclo. Pulsa la columna de quien la toma. Algunas tienen trampa: la regla puede venir de un escalón y la decisión concreta tomarla otro.",f:"RD 556/2012 y RD 499/2024; Decreto 100/2014 y Decreto 79/2024; Orden 201/2024 y Orden 55/2026, arts. 3.7, 18.5 y 22; LOE, art. 41.3.b); RD 659/2023, art. 7."},
+  {t:"El mismo módulo, tres territorios",p:"¿Es el mismo título en toda España?",c:"El título sí; el currículo completo, no. Los resultados de aprendizaje y los criterios del módulo 1298 son iguales en todas partes porque los fija el Estado. Las horas, el reparto de la formación en empresa y las reglas de evaluación los decide cada administración.",f:"RD 556/2012, modificado por el RD 499/2024 (125 h básicas); Orden EFD/657/2024; Decreto 79/2024; fichas oficiales del ciclo en Castilla-La Mancha y en la Comunidad de Madrid."},
+  {t:"El margen del docente",p:"«La normativa no deja margen»: ¿seguro?",c:"Un caso resuelto con la cadena: la norma fija qué le corresponde al estudiante y el docente decide cómo se hace. Es el modelo de respuesta de la actividad 3: norma y artículo vigentes, lo que no se puede decidir y lo que sí.",f:"Orden 201/2024, art. 3.6 y 3.7, en la redacción de la Orden 55/2026; RD 556/2012, anexo I, módulo 1298."}
+];
+  var $=function(i){return document.getElementById(i)};
+
+  // ---- Escena 0
+  var ESL=[
+    {c:"e",n:"LOE y Ley Orgánica 3/2022",q:"Cortes Generales",fi:"Grados, títulos, acceso y carácter dual de la formación.",no:"No dicen qué se enseña en cada módulo."},
+    {c:"e",n:"RD 659/2023",s:"modificado por el RD 658/2024",q:"Gobierno",fi:"Estructura común de los ciclos, formación en empresa y reglas básicas de evaluación.",no:"No fija el currículo de cada título."},
+    {c:"e",n:"RD 556/2012 del título",s:"modificado por el RD 499/2024",q:"Gobierno",fi:"Módulos, resultados de aprendizaje, criterios de evaluación, duración mínima y atribución docente.",no:"Nadie por debajo puede cambiar sus resultados ni sus criterios."},
+    {c:"a",n:"Decreto 100/2014",s:"modificado por el Decreto 79/2024",q:"Consejo de Gobierno de Castilla-La Mancha",fi:"Horas reales de cada módulo, distribución por cursos, horas en empresa y optatividad.",no:"No puede rebajar el currículo básico."},
+    {c:"a",n:"Órdenes 201/2024 y 204/2024",s:"la 201, modificada por la Orden 55/2026",q:"Consejería de Educación, Cultura y Deportes",fi:"Cómo se evalúa, promociona y califica; cómo se organiza la estancia en la empresa.",no:"No pueden contradecir el decreto ni las normas estatales."},
+    {c:"c",n:"Programación didáctica",s:"del departamento",q:"Departamento y equipo docente",fi:"Secuencia, metodología, instrumentos y criterios de calificación. Elige el cómo.",no:"No cambia el qué: resultados, criterios ni reglas de evaluación."},
+    {c:"c",n:"Plan de formación",s:"de cada estudiante",q:"Centro y empresa",fi:"Qué resultados se trabajan en el centro, en la empresa o en ambos; calendario y seguimiento.",no:"No puede llevar a la empresa lo que la norma no permite."}
+  ];
+  var iE=0;
+  function cadena(){
+    var h="";ESL.forEach(function(e,i){h+='<button type="button" class="esl '+e.c+'" aria-pressed="'+(i===iE)+'" data-i="'+i+'"><b>'+e.n+'</b><span>'+(e.s||"&nbsp;")+'</span></button>'});
+    $("cad").innerHTML=h;$("cad").querySelectorAll(".esl").forEach(function(b){b.addEventListener("click",function(){iE=+b.getAttribute("data-i");cadena()})});
+    var e=ESL[iE];$("detc").innerHTML='<div class="quien">Lo aprueba: '+e.q+'</div><h3>'+e.n+(e.s?', '+e.s:'')+'</h3><div class="fija"><b>Qué fija.</b> '+e.fi+'</div><div class="nopuede"><b>Qué no puede hacer.</b> '+e.no+'</div>';
+  }
+  // ---- Escena 1
+  var COLS=[{k:"E",n:"Estado",s:"leyes y reales decretos",bg:"#35577A"},{k:"A",n:"Castilla-La Mancha",s:"decretos y órdenes",bg:"#B4621B"},{k:"C",n:"Centro",s:"dirección, departamentos",bg:"#6C6266"},{k:"D",n:"Docente y equipo docente",s:"programación y aula",bg:"#25695C"}];
+  var IT=[
+    {q:"Los resultados de aprendizaje y los criterios de evaluación del módulo 1298.",ok:"E",x:"Los fija el real decreto del título. Ni la comunidad ni el centro pueden cambiarlos."},
+    {q:"La duración mínima del módulo 1298 (125 horas).",ok:"E",x:"Es la duración básica del real decreto del título. Las comunidades pueden ampliarla, no rebajarla."},
+    {q:"Las horas reales del módulo 1298 en un instituto de Cuenca (169 horas).",ok:"A",x:"Las fija el decreto de currículo de Castilla-La Mancha, en los anexos sustituidos por el Decreto 79/2024."},
+    {q:"Cuántas horas de formación en empresa tiene el ciclo y cuántas van en primero.",ok:"A",x:"El Decreto 79/2024 las fija con carácter general: entre 500 y 580 h en el ciclo, de las que entre 70 y 120 corresponden a primero."},
+    {q:"Que con el título de Técnico se acceda a grado superior sin prueba.",ok:"E",x:"Lo establece la LOE (art. 41.3.b) y lo reitera el RD 659/2023 (art. 112.1.a). Ninguna programación puede exigir una prueba."},
+    {q:"Qué especialidad del profesorado puede impartir el módulo 1298.",ok:"E",x:"La atribución docente está en el real decreto del título, en la redacción que le dio el RD 499/2024."},
+    {q:"Reconocer la exención de la formación en empresa a una estudiante con experiencia laboral.",ok:"C",x:"El requisito lo fija el Estado y el procedimiento la comunidad, pero la decisión la toma el centro: propone el departamento de la familia y reconoce la dirección (Orden 201/2024, art. 22, en la redacción de la Orden 55/2026)."},
+    {q:"Que un alumno de último curso con dos módulos suspensos, el 22 % de las horas, no repita.",ok:"D",x:"La regla es de la comunidad (art. 18.5 de la Orden 201/2024, añadido por la Orden 55/2026), pero la decisión es del equipo docente en la sesión de evaluación. No es un derecho automático."},
+    {q:"Qué actividades prácticas se consideran de riesgo para quien ha perdido la evaluación continua.",ok:"D",x:"La orden de evaluación remite a lo que el equipo docente considere de riesgo (art. 3.7). La programación debe preverlo."},
+    {q:"La secuencia de unidades, la metodología y los instrumentos de evaluación del módulo.",ok:"D",x:"Es el margen propio del docente: decide el cómo, sin cambiar resultados ni criterios."}
+  ];
+  var iI=0,fallo=false,puestos={E:[],A:[],C:[],D:[]},acier=0;
+  function cols(){
+    var h="";COLS.forEach(function(c){h+='<div class="col" id="col'+c.k+'"><button type="button" data-k="'+c.k+'" style="background:'+c.bg+'">'+c.n+'<small>'+c.s+'</small></button><div class="chips">'+puestos[c.k].map(function(t){return '<div class="chip">'+t+'</div>'}).join("")+'</div></div>'});
+    $("cols").innerHTML=h;$("cols").querySelectorAll(".col>button").forEach(function(b){b.addEventListener("click",function(){elegir(b.getAttribute("data-k"))})});
+  }
+  function corto(q){return q.length>70?q.slice(0,68)+"…":q}
+  function item(){
+    if(iI>=IT.length){$("iN").textContent="Terminado";$("iQ").textContent="Has acertado "+acier+" de "+IT.length+" a la primera.";$("iRes").innerHTML='Mira las columnas: el docente no decide el qué, pero tiene un margen real en el cómo. <button type="button" class="bt prim" id="iRe" style="padding:2px 9px;font-size:12.5px">Volver a empezar</button>';$("iRe").addEventListener("click",function(){iI=0;acier=0;fallo=false;puestos={E:[],A:[],C:[],D:[]};cols();item()});return}
+    var it=IT[iI];$("iN").textContent="Decisión "+(iI+1)+" de "+IT.length;$("iQ").textContent=it.q;$("iRes").textContent="Pulsa la columna de quien lo decide.";
+  }
+  var bloq=false;
+  function elegir(k){
+    if(iI>=IT.length||bloq)return;var it=IT[iI];
+    if(k===it.ok){if(!fallo)acier++;puestos[k].push(corto(it.q));cols();bloq=true;
+      $("iRes").innerHTML='<b class="ok" style="color:var(--verde)">Correcto.</b> '+it.x+' <button type="button" class="bt prim" id="iSig" style="padding:2px 9px;font-size:12.5px">Siguiente →</button>';
+      $("iSig").addEventListener("click",function(){iI++;fallo=false;bloq=false;item()});
+    } else {fallo=true;var c=$("col"+k);c.classList.remove("mal");void c.offsetWidth;c.classList.add("mal");
+      $("iRes").innerHTML='<b style="color:var(--rojo)">No.</b> Pregúntate quién aprueba la norma que lo regula y quién toma la decisión concreta.';}
+  }
+  // ---- Escena 2
+  var MAXH=250, TER=[{n:"Ámbito del ministerio",s:"Orden EFD/657/2024",h:190,c:"#35577A"},{n:"Castilla-La Mancha",s:"Decreto 100/2014 y Decreto 79/2024",h:169,c:"#B4621B"},{n:"Comunidad de Madrid",s:"decreto de currículo propio",h:215,c:"#6C6266"}];
+  function barras(anim){
+    var h="";TER.forEach(function(t,i){h+='<div class="fila"><div class="et">'+t.n+'<small>'+t.s+'</small></div><div class="pista"><div class="barra" id="b'+i+'" style="background:'+t.c+';width:'+(anim?0:t.h/MAXH*100)+'%">'+t.h+' h</div><div class="base" style="left:'+(125/MAXH*100)+'%">'+(i===0?'<span>125 h básicas (Estado)</span>':'')+'</div></div></div>'});
+    $("filas").innerHTML=h;
+    var e="";[0,50,100,150,200,250].forEach(function(v){e+='<i style="left:'+(v/MAXH*100)+'%">'+v+' h</i>'});$("esc").innerHTML=e;
+    if(anim)setTimeout(function(){TER.forEach(function(t,i){var b=$("b"+i);if(b)b.style.width=(t.h/MAXH*100)+"%"})},60);
+  }
+  window.alEntrar=function(n){ if(n===0){iE=0;cadena();} if(n===1){iI=0;acier=0;fallo=false;bloq=false;puestos={E:[],A:[],C:[],D:[]};cols();item();} if(n===2){barras(!window.matchMedia("(prefers-reduced-motion: reduce)").matches);} };
+
+
+  var $=function(i){return document.getElementById(i)};
+  var s=0, nav=document.querySelector("nav.puntos");
+  ESC.forEach(function(e,i){var x=document.createElement("button");x.type="button";x.textContent=(i+1)+". "+e.t;x.addEventListener("click",function(){ir(i)});nav.appendChild(x)});
+  function pintar(){
+    var e=ESC[s]; document.body.setAttribute("data-s",s);
+    $("num").textContent="Escena "+(s+1)+" de "+ESC.length;
+    $("tit").textContent=e.t;$("preg").textContent=e.p;$("cuerpo").textContent=e.c;$("fuente").textContent="Fuente: "+e.f;
+    $("ant").disabled=s===0;$("sig").disabled=s===ESC.length-1;
+    nav.querySelectorAll("button").forEach(function(x,i){if(i===s)x.setAttribute("aria-current","step");else x.removeAttribute("aria-current")});
+    document.querySelectorAll(".obj").forEach(function(o){o.classList.toggle("on",o.getAttribute("data-e")===String(s))});
+    if(window.alEntrar)alEntrar(s);
+  }
+  function ir(n){s=Math.max(0,Math.min(ESC.length-1,n));pintar()}
+  $("sig").addEventListener("click",function(){ir(s+1)});
+  $("ant").addEventListener("click",function(){ir(s-1)});
+  document.addEventListener("keydown",function(ev){
+    if(ev.target&&ev.target.tagName==="INPUT")return;
+    if(ev.target&&ev.target.tagName==="BUTTON"&&(ev.key===" "||ev.key==="Enter"))return;
+    if(ev.key==="ArrowRight"||ev.key==="PageDown"){ev.preventDefault();ir(s+1)}
+    else if(ev.key==="ArrowLeft"||ev.key==="PageUp"){ev.preventDefault();ir(s-1)}
+    else if(ev.key==="f"||ev.key==="F"){try{if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(function(){})}else{document.exitFullscreen()}}catch(e){}}
+  });
+  function escalar(){var m=$("marco"),stg=$("stage"),w=m.clientWidth,h=m.clientHeight;if(!w||!h)return;var k=Math.min(w/1000,h/640)*.96;stg.style.transform="translate("+((w-1000*k)/2)+"px,"+((h-640*k)/2)+"px) scale("+k+")"}
+  window.addEventListener("resize",escalar);if(window.ResizeObserver)new ResizeObserver(escalar).observe($("marco"));
+  pintar();escalar();
+
+})();
+</script>
+</body>
+</html>

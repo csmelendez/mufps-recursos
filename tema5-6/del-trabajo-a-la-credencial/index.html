@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Del trabajo a la credencial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Plan: granate UCLM para «qué contiene el sistema», verde para «quién tiene qué», ámbar solo para el atajo de la experiencia.
+     Layout: columna de texto a la izquierda + escenario fijo de 1000×640 que se escala; objetos persistentes que cambian de sitio entre escenas. */
+  --granate:#A3002F;
+  --granate-claro:#F7E4E9;
+  --verde:#25695C;
+  --verde-claro:#E1EFEB;
+  --ambar:#B4621B;
+  --tinta:#2A2125;
+  --gris:#6C6266;
+  --linea:#DED6D9;
+  --papel:#FFFFFF;
+  --fondo:#F6F3F4;
+  --f-disp:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;
+  --f-cuerpo:"IBM Plex Sans",Arial,Helvetica,sans-serif;
+  --t:900ms;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--fondo);color:var(--tinta);font-family:var(--f-cuerpo);display:flex;flex-direction:column}
+
+/* Cabecera */
+header{display:flex;align-items:center;gap:20px;padding:12px 24px;background:var(--papel);border-bottom:1px solid var(--linea);flex-wrap:wrap}
+.volver{font:600 13px var(--f-cuerpo);color:var(--granate);text-decoration:none;border:1px solid var(--granate);border-radius:999px;padding:4px 11px}
+.volver:hover{background:var(--granate);color:#fff}
+.marca{font-family:var(--f-disp);font-weight:700;color:var(--granate);font-size:15px;letter-spacing:.02em}
+.marca span{color:var(--gris);font-weight:500}
+nav.puntos{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+nav.puntos button{font:500 13px var(--f-cuerpo);border:1px solid var(--linea);background:var(--papel);color:var(--gris);border-radius:999px;padding:5px 11px;cursor:pointer}
+nav.puntos button[aria-current="step"]{background:var(--granate);border-color:var(--granate);color:#fff}
+nav.puntos button:focus-visible,.ctl button:focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
+
+/* Cuerpo */
+main{flex:1;display:grid;grid-template-columns:minmax(280px,360px) 1fr;min-height:0}
+aside{padding:28px 26px 20px;display:flex;flex-direction:column;gap:12px;background:var(--papel);border-right:1px solid var(--linea);overflow:auto}
+.num{font-family:var(--f-disp);font-weight:600;color:var(--granate);font-size:15px;letter-spacing:.06em;text-transform:uppercase}
+aside h1{font-family:var(--f-disp);font-weight:700;font-size:40px;line-height:1.02;margin:0;text-wrap:balance}
+.pregunta{font-size:19px;font-style:italic;color:var(--granate);margin:0}
+.cuerpo{font-size:16px;line-height:1.55;margin:0;max-width:62ch}
+.fuente{font-size:12.5px;color:var(--gris);margin-top:auto;border-top:1px solid var(--linea);padding-top:10px;line-height:1.45}
+.ctl{display:flex;gap:8px;align-items:center}
+.ctl button{font:600 14px var(--f-cuerpo);border:1px solid var(--granate);background:var(--papel);color:var(--granate);border-radius:6px;padding:8px 14px;cursor:pointer}
+.ctl button.prim{background:var(--granate);color:#fff}
+.ctl button:disabled{opacity:.35;cursor:default}
+.ctl .paso{font-size:12.5px;color:var(--gris);margin-left:6px;font-variant-numeric:tabular-nums}
+
+.marco{position:relative;min-height:0;overflow:hidden;cursor:pointer}
+.stage{position:absolute;left:0;top:0;width:1000px;height:640px;transform-origin:0 0}
+
+/* Objetos: por defecto ocultos, colocados en (0,0) y movidos por transform */
+.obj{position:absolute;left:0;top:0;transform-origin:0 0;opacity:0;pointer-events:none;
+  transition:transform var(--t) cubic-bezier(.6,.05,.25,1),opacity calc(var(--t)*.8) ease}
+.fade{opacity:0;transition:opacity 600ms ease,transform 600ms ease;transform:translateY(8px)}
+.fade.on{opacity:1;transform:none}
+
+/* Tarjetas */
+.card{background:var(--papel);border:1px solid var(--linea);border-radius:10px;box-shadow:0 6px 20px rgba(60,20,30,.08);padding:18px 20px}
+.card .tipo{font:600 12px var(--f-cuerpo);letter-spacing:.08em;text-transform:uppercase;color:var(--gris)}
+.card .cod{font:700 40px/1.05 var(--f-disp);color:var(--granate);margin:2px 0 4px}
+.card .den{font-size:14px;line-height:1.35;margin-bottom:12px}
+.fila{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:6px;font-size:14px;line-height:1.3;transition:background 500ms, box-shadow 500ms}
+.fila b{font-family:var(--f-disp);color:var(--granate);min-width:40px;white-space:nowrap}
+.fila .ic{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px}
+.fila .ic i{width:7px;height:7px;border-radius:50%;background:var(--granate);opacity:.55}
+.hl{background:var(--granate-claro);box-shadow:inset 0 0 0 2px var(--granate)}
+.tag{display:inline-block;font:600 12px var(--f-cuerpo);border-radius:999px;padding:3px 9px;background:var(--fondo);color:var(--gris);border:1px solid var(--linea)}
+
+/* Posiciones por escena */
+#obra{width:560px;height:350px}
+[data-s="0"] #obra{transform:translate(220px,130px);opacity:1}
+[data-s="1"] #obra{transform:translate(18px,18px) scale(.36);opacity:.55}
+
+#ecp{width:380px;height:410px;transform:translate(310px,170px)}
+[data-s="1"] #ecp{transform:translate(330px,120px);opacity:1}
+[data-s="2"] #ecp{transform:translate(30px,30px);opacity:1}
+
+#mod{width:380px;height:410px;transform:translate(700px,30px)}
+[data-s="2"] #mod{transform:translate(590px,30px);opacity:1}
+
+#par{width:940px;transform:translate(30px,462px)}
+[data-s="2"] #par{opacity:1}
+#stairs{width:1000px;height:640px}
+[data-s="3"] #stairs{opacity:1}
+#curr{width:1000px;height:640px}
+[data-s="4"] #curr{opacity:1}
+#cred{width:1000px;height:640px}
+[data-s="5"] #cred{opacity:1}
+#mapa{width:1000px;height:640px}
+[data-s="6"] #mapa{opacity:1}
+#lineas{position:absolute;left:0;top:0;width:1000px;height:640px;pointer-events:none;overflow:visible}
+
+/* Escalera de grados */
+.grado{position:absolute;bottom:120px;width:150px;border-radius:10px 10px 0 0;background:var(--granate-claro);border:1px solid #E8C6D0;padding:12px 12px;display:flex;flex-direction:column;gap:6px;
+  transform:translateY(30px);opacity:0;transition:transform 700ms cubic-bezier(.3,.7,.2,1),opacity 700ms,box-shadow 500ms,background 500ms}
+[data-s="3"] .grado{transform:none;opacity:1}
+.grado .l{font:700 34px/1 var(--f-disp);color:var(--granate)}
+.grado .n{font:600 14px/1.2 var(--f-cuerpo)}
+.grado .d{font-size:12.5px;line-height:1.35;color:var(--tinta)}
+.grado.e{background:repeating-linear-gradient(135deg,#F3F0F1 0 8px,#EBE6E8 8px 16px);border-color:var(--linea)}
+.grado.e .l{color:var(--gris)}
+.grado.hit{box-shadow:0 0 0 3px var(--granate),0 8px 18px rgba(163,0,47,.18);background:#fff}
+.chip{display:inline-block;align-self:flex-start;font:700 12px var(--f-cuerpo);background:var(--granate);color:#fff;border-radius:4px;padding:2px 7px;opacity:0;transition:opacity 500ms}
+.grado.hit .chip{opacity:1}
+.eje{position:absolute;left:30px;bottom:66px;width:800px;font-size:13px;color:var(--gris);display:flex;justify-content:space-between}
+.niveles{position:absolute;left:845px;top:150px;width:140px}
+.niv{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--linea);background:var(--papel);border-radius:8px;padding:9px 11px;margin-bottom:8px;font-size:14px}
+.niv.on2{border-color:var(--verde);box-shadow:inset 0 0 0 2px var(--verde)}
+.niv b{font-family:var(--f-disp);font-size:18px}
+.niveles h3,.col h3{font:600 13px var(--f-cuerpo);text-transform:uppercase;letter-spacing:.07em;color:var(--gris);margin:0 0 8px}
+
+/* Currículo */
+.cita{position:absolute;left:30px;top:30px;width:940px;padding:16px 20px;border-left:4px solid var(--granate);background:var(--papel);border-radius:0 8px 8px 0;font-size:16px;line-height:1.45}
+.cita small{display:block;color:var(--gris);margin-top:4px;font-size:12.5px}
+.col{position:absolute;top:150px;width:455px;padding:16px 18px;border-radius:10px;background:var(--papel);border:1px solid var(--linea)}
+.col ul{margin:0;padding-left:18px;font-size:14.5px;line-height:1.5}
+.col.estado{left:30px;border-top:5px solid var(--granate)}
+.col.ccaa{left:515px;border-top:5px solid var(--tinta)}
+.horas{position:absolute;left:30px;top:380px;width:940px}
+.barra{display:grid;grid-template-columns:200px 1fr;align-items:center;gap:12px;margin-bottom:12px;font-size:14px}
+.barra .b{height:30px;border-radius:4px;background:var(--granate);color:#fff;font:600 14px var(--f-cuerpo);display:flex;align-items:center;padding-left:10px;width:0;transition:width 900ms cubic-bezier(.3,.7,.2,1);white-space:nowrap;font-variant-numeric:tabular-nums}
+.barra .b.gris{background:var(--gris)}
+.horas .nota{font-size:13px;color:var(--gris);margin-top:4px}
+
+/* Credencial */
+.persona{position:absolute;left:40px;top:150px;width:170px;text-align:center;font-size:14px}
+.persona b{display:block;font-family:var(--f-disp);font-size:20px}
+.doc{position:absolute;width:250px;padding:16px;border-radius:8px;background:var(--papel);border:1px solid var(--linea);box-shadow:0 8px 22px rgba(60,20,30,.12)}
+.doc .sello{float:right;font:700 22px var(--f-disp);color:#fff;background:var(--granate);border-radius:6px;padding:2px 8px}
+.doc .tipo{font:600 11.5px var(--f-cuerpo);letter-spacing:.08em;text-transform:uppercase;color:var(--gris)}
+.doc .nom{font:600 17px/1.2 var(--f-disp);margin-top:6px}
+#titulo{left:0;top:0;z-index:2;transform:translate(230px,170px);transition:transform 1100ms cubic-bezier(.6,.05,.25,1)}
+[data-s="5"][data-t="1"] #titulo,[data-s="5"][data-t="2"] #titulo{transform:translate(700px,214px) scale(.82)}
+.registro{position:absolute;left:660px;top:120px;width:310px;height:300px;border-radius:12px;border:2px solid var(--verde);background:var(--verde-claro);padding:14px 16px}
+.registro h3{margin:0;font:700 20px/1.15 var(--f-disp);color:var(--verde)}
+.registro p{margin:6px 0 0;font-size:13px;line-height:1.4}
+.informe{position:absolute;left:660px;top:440px;width:310px;padding:12px 14px;border-radius:8px;border:1px dashed var(--verde);background:var(--papel);font-size:13.5px;line-height:1.4}
+.nota4b{position:absolute;left:230px;top:440px;width:390px;font-size:13.5px;line-height:1.45;padding:12px 14px;border-radius:8px;background:var(--fondo);border:1px solid var(--linea)}
+.nota4b s{color:var(--gris)}
+
+/* Mapa final */
+.pz{position:absolute;width:212px;padding:12px 13px;border-radius:9px;background:var(--papel);border:1px solid var(--linea);box-shadow:0 4px 14px rgba(60,20,30,.07)}
+.pz h4{margin:0 0 4px;font:700 15.5px/1.15 var(--f-disp);color:var(--granate)}
+.pz p{margin:0;font-size:12.5px;line-height:1.35}
+.pz.reg{border-color:#BFDCD4;background:var(--verde-claro);width:290px}
+.pz.reg h4{color:var(--verde)}
+.franja{position:absolute;font:600 12.5px var(--f-cuerpo);letter-spacing:.06em;text-transform:uppercase}
+.atajo-txt{position:absolute;left:30px;top:548px;width:300px;font-size:13px;line-height:1.4;color:var(--ambar)}
+.atajo-txt b{display:block;font-family:var(--f-disp);font-size:16px}
+
+svg .ln{stroke:var(--granate);stroke-width:2.5;fill:none;stroke-dasharray:900;stroke-dashoffset:900;opacity:0;transition:stroke-dashoffset 1100ms ease,opacity 300ms}
+svg .ln.on{stroke-dashoffset:0;opacity:1}
+svg .ln.v{stroke:var(--verde)}
+svg .atajo{stroke:var(--ambar);stroke-width:3;fill:none;stroke-dasharray:9 7;opacity:0;transition:opacity 800ms}
+svg .atajo.on{opacity:1}
+
+@media (max-width:900px){
+  main{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  aside{border-right:0;border-bottom:1px solid var(--linea);padding:18px 16px}
+  aside h1{font-size:30px}
+  .marco{min-height:62vw}
+  header{padding:10px 16px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:1ms !important}
+}
+</style>
+</head>
+<body data-s="0" data-t="0">
+<header>
+  <a class="volver" href="../../index.html">← Colección</a>
+  <div class="marca">Temas 5 y 6 · El Sistema de FP <span>· Caso guía: Técnico en Vídeo Disc-jockey y Sonido</span></div>
+  <nav class="puntos" aria-label="Escenas"></nav>
+</header>
+<main>
+  <aside aria-live="polite">
+    <div class="num" id="num">Escena 1 de 7</div>
+    <h1 id="tit">El trabajo</h1>
+    <p class="pregunta" id="preg"></p>
+    <p class="cuerpo" id="cuerpo"></p>
+    <div class="ctl">
+      <button type="button" id="ant">← Anterior</button>
+      <button type="button" id="sig" class="prim">Siguiente →</button>
+      <span class="paso" id="paso"></span>
+    </div>
+    <div class="fuente" id="fuente"></div>
+  </aside>
+
+  <div class="marco" id="marco" role="img" aria-label="Animación de la cadena del sistema: del trabajo a la credencial">
+    <div class="stage" id="stage">
+
+      <svg id="lineas" viewBox="0 0 1000 640" aria-hidden="true">
+        <defs>
+          <marker id="fl" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#A3002F"/></marker>
+          <marker id="flv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#25695C"/></marker>
+          <marker id="fla" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#B4621B"/></marker>
+        </defs>
+        <!-- escena 2: del trabajo al estándar -->
+        <path class="ln" data-at="1:0" d="M225 145 C 270 160, 290 190, 322 210" marker-end="url(#fl)"/>
+        <!-- escena 3: elemento 1 → RA 1 -->
+        <path class="ln" data-at="2:0" d="M405 222 C 480 222, 520 210, 600 210" marker-end="url(#fl)"/>
+        <!-- escena 7: cadena superior -->
+        <path class="ln" data-at="6:0" d="M244 150 L 262 150" marker-end="url(#fl)"/>
+        <path class="ln" data-at="6:0" d="M478 150 L 496 150" marker-end="url(#fl)"/>
+        <path class="ln" data-at="6:0" d="M712 150 L 730 150" marker-end="url(#fl)"/>
+        <!-- escena 7: de la oferta a la credencial -->
+        <path class="ln v" data-at="6:0" d="M604 178 C 604 300, 495 310, 495 416" marker-end="url(#flv)"/>
+        <!-- escena 7: atajo de la experiencia -->
+        <path class="atajo" data-at="6:1" d="M70 178 C 36 270, 48 370, 110 416" marker-end="url(#fla)"/>
+      </svg>
+
+      <!-- 1. El trabajo -->
+      <div class="obj" id="obra" aria-hidden="true">
+        <svg viewBox="0 0 560 350" width="560" height="350">
+          <rect x="0" y="0" width="560" height="350" rx="14" fill="#2A2125"/>
+          <g fill="#3B3035"><rect x="30" y="38" width="500" height="10" rx="3"/><rect x="60" y="48" width="6" height="40"/><rect x="494" y="48" width="6" height="40"/></g>
+          <g fill="#F7E4E9" opacity=".9"><circle cx="150" cy="58" r="7"/><circle cx="280" cy="58" r="7"/><circle cx="410" cy="58" r="7"/></g>
+          <polygon points="143,64 157,64 205,250 95,250" fill="#F7E4E9" opacity=".08"/>
+          <polygon points="403,64 417,64 465,250 355,250" fill="#F7E4E9" opacity=".08"/>
+          <rect x="20" y="250" width="520" height="22" rx="3" fill="#4A3D42"/>
+          <g fill="#151012" stroke="#6C6266" stroke-width="2">
+            <rect x="40" y="132" width="62" height="118" rx="4"/><rect x="458" y="132" width="62" height="118" rx="4"/>
+            <rect x="46" y="90" width="50" height="40" rx="4"/><rect x="464" y="90" width="50" height="40" rx="4"/>
+          </g>
+          <g fill="#2A2125" stroke="#6C6266" stroke-width="2"><circle cx="71" cy="165" r="18"/><circle cx="71" cy="222" r="18"/><circle cx="489" cy="165" r="18"/><circle cx="489" cy="222" r="18"/></g>
+          <path d="M102 240 C 180 300, 260 300, 300 300 S 420 296, 458 240" stroke="#A3002F" stroke-width="3" fill="none"/>
+          <path d="M102 230 C 170 286, 250 290, 300 296" stroke="#E8C6D0" stroke-width="2" fill="none" opacity=".7"/>
+          <rect x="240" y="292" width="120" height="34" rx="4" fill="#4A3D42" stroke="#A3002F" stroke-width="2"/>
+          <g fill="#E8C6D0"><rect x="252" y="300" width="6" height="18"/><rect x="266" y="304" width="6" height="14"/><rect x="280" y="298" width="6" height="20"/><rect x="294" y="302" width="6" height="16"/><rect x="308" y="300" width="6" height="18"/><rect x="322" y="304" width="6" height="14"/><rect x="336" y="300" width="6" height="18"/></g>
+          <g fill="#F7E4E9"><circle cx="190" cy="196" r="11"/><rect x="180" y="208" width="20" height="40" rx="6"/><path d="M198 216 L 226 196" stroke="#F7E4E9" stroke-width="6" stroke-linecap="round"/>
+            <circle cx="372" cy="196" r="11"/><rect x="362" y="208" width="20" height="40" rx="6"/><path d="M364 218 L 340 238" stroke="#F7E4E9" stroke-width="6" stroke-linecap="round"/></g>
+          <rect x="222" y="186" width="22" height="16" rx="2" fill="#A3002F"/>
+          <text x="280" y="30" fill="#E8C6D0" font-family="IBM Plex Sans, Arial" font-size="14" text-anchor="middle" letter-spacing="2">MONTAJE DE SONIDO · CONCIERTO</text>
+        </svg>
+      </div>
+
+      <!-- 2. El estándar -->
+      <div class="obj card" id="ecp">
+        <div class="tipo">Estándar de competencia · nivel 2</div>
+        <div class="cod">ECP1402_2</div>
+        <div class="den">Instalar, montar, desmontar y mantener el equipamiento en producciones de sonido</div>
+        <div class="fila" id="ec1"><b>EC 1</b><div>Montar, desmontar y almacenar el equipamiento<div class="ic" aria-label="8 indicadores"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
+        <div class="fila"><b>EC 2</b><div>Tender y recoger líneas y conexionar los equipos<div class="ic" aria-label="9 indicadores"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
+        <div class="fila"><b>EC 3</b><div>Mantener el equipamiento<div class="ic" aria-label="3 indicadores"><i></i><i></i><i></i></div></div></div>
+        <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"><span class="tag">3 elementos · 20 indicadores de calidad</span><span class="tag">antes UC1402_2</span></div>
+      </div>
+
+      <!-- 3. El módulo -->
+      <div class="obj card" id="mod">
+        <div class="tipo">Módulo profesional</div>
+        <div class="cod">1298</div>
+        <div class="den">Instalación y montaje de equipos de sonido</div>
+        <div class="fila hl"><b>RA 1</b><div>Montaje de los equipos</div></div>
+        <div class="fila"><b>RA 2</b><div>Preinstalación eléctrica</div></div>
+        <div class="fila"><b>RA 3</b><div>Tendido y recogida del cableado</div></div>
+        <div class="fila"><b>RA 4</b><div>Conexión y comprobación</div></div>
+        <div class="fila"><b>RA 5</b><div>Mantenimiento preventivo</div></div>
+      </div>
+
+      <div class="obj" id="par">
+        <div class="card fade" data-at="2:1" style="display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:14px 18px">
+          <div style="font-size:13.5px;line-height:1.45"><span class="tipo">Trabajo · indicador de calidad</span><br>«El desmontaje, la carga y la descarga se preparan aplicando la prevención de riesgos, considerando el peso, la fragilidad y el reparto de la carga».</div>
+          <div style="font-size:13.5px;line-height:1.45"><span class="tipo">Formación · criterio de evaluación del RA 1</span><br>«Se ha realizado la carga y descarga de los equipos de sonido, aplicando las medidas de protección individual».</div>
+        </div>
+      </div>
+
+      <!-- 4. Las ofertas -->
+      <div class="obj" id="stairs">
+        <div class="grado" id="gA" style="left:30px;height:150px;transition-delay:0ms"><span class="l">A</span><span class="n">Acreditación parcial</span><span class="d">Cinco, una por RA · 35–40 h</span><span class="chip">1298</span></div>
+        <div class="grado" id="gB" style="left:194px;height:205px;transition-delay:120ms"><span class="l">B</span><span class="n">Certificado de competencia</span><span class="d">IMS_B_1298 · el módulo suelto</span><span class="chip">1298</span></div>
+        <div class="grado" id="gC" style="left:358px;height:265px;transition-delay:240ms"><span class="l">C</span><span class="n">Certificado profesional</span><span class="d">IMS_C_002_4B · 1298 + 1299 + 1300 + prevención · 670 h</span><span class="chip">1298</span></div>
+        <div class="grado" id="gD" style="left:522px;height:330px;transition-delay:360ms"><span class="l">D</span><span class="n">Título</span><span class="d">Técnico en Vídeo Disc-jockey y Sonido · ciclo de 2000 h</span><span class="chip">1298</span></div>
+        <div class="grado e" style="left:686px;height:390px;transition-delay:480ms"><span class="l">E</span><span class="n">Curso de especialización</span><span class="d">Se cursa después de un título</span></div>
+        <div class="eje"><span>Grado: amplitud de la formación →</span><span>de un bloque formativo a un ciclo</span></div>
+        <div class="niveles fade" data-at="3:2">
+          <h3>Nivel</h3>
+          <div class="niv"><span>Nivel 1</span><b>MECU 3</b></div>
+          <div class="niv on2"><span>Nivel 2</span><b>MECU 4</b></div>
+          <div class="niv"><span>Nivel 3</span><b>MECU 5</b></div>
+          <p style="font-size:12.5px;line-height:1.4;color:var(--gris);margin:4px 0 0">Otra escala: la complejidad. El 1298 es de nivel 2 en los cuatro grados.</p>
+        </div>
+      </div>
+
+      <!-- 5. El currículo -->
+      <div class="obj" id="curr">
+        <div class="cita">«Realiza el montaje de los equipos del sistema de sonido en producciones audiovisuales y en espectáculos, analizando el espacio de trabajo y aplicando técnicas que garanticen la seguridad.»<small>RA 1 del módulo 1298 · se comprueba con 8 criterios de evaluación (a–h)</small></div>
+        <div class="col estado"><h3>Lo fija el Estado</h3><ul><li>Módulos y códigos</li><li>Resultados de aprendizaje y criterios de evaluación</li><li>Duración mínima de cada módulo</li></ul></div>
+        <div class="col ccaa"><h3>Lo completa la comunidad autónoma</h3><ul><li>Horas reales y reparto por cursos</li><li>Contenidos explícitos, a título orientativo</li><li>Añadidos de hasta el 10&nbsp;%, sin rebajar la parte básica</li></ul></div>
+        <div class="horas fade" data-at="4:1">
+          <div class="barra"><span>Duración básica (Estado)</span><span class="b gris" data-w="125">125 h</span></div>
+          <div class="barra"><span>Castilla-La Mancha</span><span class="b" data-w="169">169 h</span></div>
+          <div class="barra"><span>Comunidad de Madrid</span><span class="b" data-w="215">215 h</span></div>
+          <div class="nota">Mismo módulo, mismos resultados de aprendizaje, distinta duración. Los dos currículos suman 2000 h y el título vale igual en todo el Estado.</div>
+        </div>
+      </div>
+
+      <!-- 6. La credencial -->
+      <div class="obj" id="cred">
+        <div class="persona" aria-hidden="false">
+          <svg viewBox="0 0 120 150" width="120" height="150" aria-hidden="true"><circle cx="60" cy="40" r="26" fill="#2A2125"/><path d="M14 150 C 14 96, 106 96, 106 150 z" fill="#A3002F"/></svg>
+          <b>Lucía</b>termina el ciclo
+        </div>
+        <div class="doc" id="titulo"><span class="sello">4A</span><div class="tipo">Título · Grado D</div><div class="nom">Técnico en Vídeo Disc-jockey y Sonido</div></div>
+        <div class="registro fade" data-at="5:1"><h3>Registro Estatal de Formación Profesional</h3><p>Da número a la credencial y validez en todo el Estado.</p></div>
+        <div class="informe fade" data-at="5:2"><b>Informe formativo-profesional</b><br>Lucía lo descarga en la sede electrónica del ministerio, con todo lo que tiene acreditado.</div>
+        <div class="nota4b fade" data-at="5:2"><s>Certificado IMS_C_002_4B (4B)</s> no se le registra aparte: ha superado la oferta mayor que lo contiene (RD 69/2025, art. 18.5).</div>
+      </div>
+
+      <!-- 7. El mapa completo -->
+      <div class="obj" id="mapa">
+        <div class="franja" style="left:30px;top:40px;color:var(--granate)">Qué contiene el sistema · para programar</div>
+        <div class="pz" style="left:30px;top:78px"><h4>Catálogo Nacional de Estándares</h4><p>ECP1402_2 y otros seis estándares del título</p></div>
+        <div class="pz" style="left:264px;top:78px"><h4>Catálogo Modular</h4><p>Módulo 1298, vinculado al ECP1402_2</p></div>
+        <div class="pz" style="left:498px;top:78px"><h4>Catálogo Nacional de Ofertas</h4><p>Grados A, B, C y D con el 1298</p></div>
+        <div class="pz" style="left:732px;top:78px"><h4>Elementos básicos del currículo</h4><p>5 resultados de aprendizaje; 8 criterios en el RA 1</p></div>
+        <div class="franja" style="left:140px;top:382px;color:var(--verde)">Quién tiene qué · para orientar</div>
+        <div class="pz reg" style="left:350px;top:420px"><h4>Registro Estatal de FP</h4><p>El título de Lucía</p></div>
+        <div class="pz reg" style="left:30px;top:420px"><h4>Registro Estatal de Acreditaciones</h4><p>Estándares acreditados por experiencia</p></div>
+        <div class="pz reg" style="left:670px;top:420px"><h4>Registro General de Centros</h4><p>Los dos institutos que imparten el ciclo en Castilla-La Mancha</p></div>
+        <div class="atajo-txt fade" data-at="6:1" style="left:30px;top:530px;width:620px"><b>Atajo de la experiencia</b>Quien ha aprendido trabajando puede acreditar el estándar sin cursar el módulo ni la oferta. Es la acreditación de competencias, que se estudia más adelante.</div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<script>
+(function(){
+  var escenas=[
+    {t:"El trabajo",p:"¿Qué se hace en el trabajo?",c:"Todo empieza fuera del aula. En un concierto, un técnico monta las cajas, tiende el cableado, conecta la mesa y revisa el equipo. Ese desempeño, descrito con el sector, es el punto de partida del sistema.",f:"Sistema productivo. Caso guía: Técnico en Vídeo Disc-jockey y Sonido (RD 556/2012).",n:1},
+    {t:"El estándar",p:"¿Cómo se describe ese trabajo?",c:"El INCUAL lo describe en un estándar de competencia: tres elementos (qué se hace) con veinte indicadores de calidad (cómo se sabe que está bien hecho). El estándar describe trabajo y no regula ninguna profesión. La antigua UC1402_2 es hoy el ECP1402_2: mismo número y mismo nivel.",f:"RD 69/2025, arts. 3 a 8; RD 532/2025; INCUAL, documento de la cualificación IMS436_2.",n:1},
+    {t:"El módulo",p:"¿Qué tiene que aprender el alumnado?",c:"El módulo traduce el estándar a formación: los elementos pasan a resultados de aprendizaje y los indicadores, a criterios de evaluación. En el aula se programa y se califica con el módulo, no con el estándar. Superar el 1298 acredita por sí solo el ECP1402_2.",f:"RD 69/2025, arts. 9 a 11; RD 556/2012, anexo I.",n:2},
+    {t:"Las ofertas",p:"¿Qué se puede cursar?",c:"El mismo módulo forma parte de ofertas de distinto tamaño. El grado mide la amplitud, desde un bloque formativo hasta un ciclo. El nivel mide la complejidad y es otra escala: no hay que mezclarlas.",f:"RD 659/2023, art. 4; RD 69/2025, arts. 12 a 14; RD 209/2025; RD 272/2022.",n:3},
+    {t:"El currículo",p:"¿Quién decide qué se enseña y cuántas horas?",c:"El Estado fija los resultados de aprendizaje, los criterios y una duración mínima. La comunidad autónoma completa el currículo con las horas reales, los cursos y los contenidos, sin rebajar la parte básica.",f:"RD 69/2025, art. 15; RD 659/2023, art. 7; Decreto 100/2014 de Castilla-La Mancha.",n:2},
+    {t:"La credencial",p:"¿Qué se lleva la persona?",c:"Lucía supera el ciclo y obtiene el título de Técnico, nivel 4A del Marco Español de Cualificaciones. El título se inscribe en el Registro Estatal de Formación Profesional, que le da validez en todo el Estado.",f:"RD 69/2025, arts. 16 a 19; RD 272/2022.",n:3},
+    {t:"El mapa completo",p:"¿Cómo encaja todo?",c:"Arriba está lo que contiene el sistema, que se consulta para programar. Abajo, quién tiene qué, que se consulta para orientar. La flecha discontinua es el atajo de la experiencia, que se estudia más adelante.",f:"LO 3/2022, art. 7; RD 69/2025, arts. 3 a 24.",n:2}
+  ];
+  var b=document.body, s=0, t=0;
+  var nav=document.querySelector("nav.puntos");
+  escenas.forEach(function(e,i){
+    var bt=document.createElement("button"); bt.type="button"; bt.textContent=(i+1)+". "+e.t;
+    bt.addEventListener("click",function(ev){ev.stopPropagation();ir(i,0);});
+    nav.appendChild(bt);
+  });
+  var $=function(id){return document.getElementById(id)};
+
+  function pintar(){
+    b.setAttribute("data-s",s); b.setAttribute("data-t",t);
+    var e=escenas[s];
+    $("num").textContent="Escena "+(s+1)+" de "+escenas.length;
+    $("tit").textContent=e.t; $("preg").textContent=e.p; $("cuerpo").textContent=e.c; $("fuente").textContent="Fuente: "+e.f;
+    $("paso").textContent=e.n>1?("Paso "+(t+1)+" de "+e.n):"";
+    $("ant").disabled=(s===0&&t===0);
+    $("sig").disabled=(s===escenas.length-1&&t===e.n-1);
+    nav.querySelectorAll("button").forEach(function(x,i){ if(i===s){x.setAttribute("aria-current","step")} else {x.removeAttribute("aria-current")} });
+    document.querySelectorAll("[data-at]").forEach(function(el){
+      var p=el.getAttribute("data-at").split(":"); var on=(+p[0]===s && t>=+p[1]);
+      el.classList.toggle("on",on);
+    });
+    $("ec1").classList.toggle("hl",s===2);
+    ["gA","gB","gC","gD"].forEach(function(id){ $(id).classList.toggle("hit",s===3&&t>=1); });
+    document.querySelectorAll(".barra .b").forEach(function(x){ x.style.width=(s===4&&t>=1)?(x.getAttribute("data-w")*2.6)+"px":"0px"; });
+  }
+  function ir(ns,nt){ s=Math.max(0,Math.min(escenas.length-1,ns)); t=Math.max(0,Math.min(escenas[s].n-1,nt)); pintar(); }
+  function sig(){ if(t<escenas[s].n-1){t++;pintar();} else if(s<escenas.length-1){ir(s+1,0);} }
+  function ant(){ if(t>0){t--;pintar();} else if(s>0){ir(s-1,escenas[s-1].n-1);} }
+  $("sig").addEventListener("click",function(ev){ev.stopPropagation();sig();});
+  $("ant").addEventListener("click",function(ev){ev.stopPropagation();ant();});
+  $("marco").addEventListener("click",sig);
+  document.addEventListener("keydown",function(ev){
+    if(ev.key==="ArrowRight"||ev.key===" "||ev.key==="PageDown"||ev.key==="Enter"){ if(ev.target.tagName==="BUTTON"&&ev.key!=="ArrowRight")return; ev.preventDefault(); sig(); }
+    else if(ev.key==="ArrowLeft"||ev.key==="PageUp"){ ev.preventDefault(); ant(); }
+    else if(ev.key==="Home"){ ir(0,0); }
+    else if(ev.key==="f"||ev.key==="F"){ try{ if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(function(){});} else {document.exitFullscreen();} }catch(e){} }
+  });
+  function escalar(){
+    var m=$("marco"), st=$("stage"); var w=m.clientWidth, h=m.clientHeight; if(!w||!h)return;
+    var k=Math.min(w/1000,h/640)*0.96; var x=(w-1000*k)/2, y=(h-640*k)/2;
+    st.style.transform="translate("+x+"px,"+y+"px) scale("+k+")";
+  }
+  window.addEventListener("resize",escalar);
+  if(window.ResizeObserver){ new ResizeObserver(escalar).observe($("marco")); }
+  pintar(); escalar();
+})();
+</script>
+</body>
+</html>

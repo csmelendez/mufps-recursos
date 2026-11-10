@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grado, nivel, modalidad y régimen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Plan: cuatro dimensiones, cuatro colores fijos (grado granate, nivel verde, modalidad azul pizarra, régimen tinta); ámbar para avisos.
+     Layout: columna de texto + escenario 1000×640: mandos a la izquierda, ficha de la oferta a la derecha. */
+  --granate:#A3002F; --granate-claro:#F7E4E9;
+  --verde:#25695C; --verde-claro:#E1EFEB;
+  --pizarra:#35577A; --pizarra-claro:#E3EBF3;
+  --intensivo:#3B2A31; --tinta-claro:#ECE7E9;
+  --ambar:#B4621B; --ambar-claro:#FBF1E7;
+  --tinta:#2A2125; --gris:#6C6266; --linea:#DED6D9; --papel:#FFFFFF; --fondo:#F6F3F4;
+  --f-disp:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif;
+  --f-cuerpo:"IBM Plex Sans",Arial,Helvetica,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--fondo);color:var(--tinta);font-family:var(--f-cuerpo);display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:20px;padding:12px 24px;background:var(--papel);border-bottom:1px solid var(--linea);flex-wrap:wrap}
+.volver{font:600 13px var(--f-cuerpo);color:var(--granate);text-decoration:none;border:1px solid var(--granate);border-radius:999px;padding:4px 11px}
+.volver:hover{background:var(--granate);color:#fff}
+.marca{font-family:var(--f-disp);font-weight:700;color:var(--granate);font-size:15px;letter-spacing:.02em}
+.marca span{color:var(--gris);font-weight:500}
+nav.puntos{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+nav.puntos button{font:500 13px var(--f-cuerpo);border:1px solid var(--linea);background:var(--papel);color:var(--gris);border-radius:999px;padding:5px 11px;cursor:pointer}
+nav.puntos button[aria-current="step"]{background:var(--granate);border-color:var(--granate);color:#fff}
+button:focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
+main{flex:1;display:grid;grid-template-columns:minmax(280px,360px) 1fr;min-height:0}
+aside{padding:28px 26px 20px;display:flex;flex-direction:column;gap:12px;background:var(--papel);border-right:1px solid var(--linea);overflow:auto}
+.num{font-family:var(--f-disp);font-weight:600;color:var(--granate);font-size:15px;letter-spacing:.06em;text-transform:uppercase}
+aside h1{font-family:var(--f-disp);font-weight:700;font-size:40px;line-height:1.02;margin:0;text-wrap:balance}
+.pregunta{font-size:19px;font-style:italic;color:var(--granate);margin:0}
+.cuerpo{font-size:16px;line-height:1.55;margin:0;max-width:62ch}
+.fuente{font-size:12.5px;color:var(--gris);margin-top:auto;border-top:1px solid var(--linea);padding-top:10px;line-height:1.45}
+.ctl{display:flex;gap:8px;align-items:center}
+.ctl button{font:600 14px var(--f-cuerpo);border:1px solid var(--granate);background:var(--papel);color:var(--granate);border-radius:6px;padding:8px 14px;cursor:pointer}
+.ctl button.prim{background:var(--granate);color:#fff}
+.ctl button:disabled{opacity:.35;cursor:default}
+.marco{position:relative;min-height:0;overflow:hidden}
+.stage{position:absolute;left:0;top:0;width:1000px;height:640px;transform-origin:0 0}
+.obj{position:absolute;left:0;top:0;width:1000px;height:640px;opacity:0;pointer-events:none;transition:opacity 600ms ease}
+[data-s="0"] #lab,[data-s="1"] #lab,[data-s="2"] #lab,[data-s="3"] #lab,[data-s="4"] #lab,[data-s="5"] #lab{opacity:1;pointer-events:auto}
+[data-s="6"] #prueba{opacity:1;pointer-events:auto}
+
+/* Mandos */
+.mandos{position:absolute;left:30px;top:24px;width:440px;display:flex;flex-direction:column;gap:12px}
+.dim{background:var(--papel);border:1px solid var(--linea);border-radius:10px;padding:11px 14px;border-left-width:6px;transition:opacity 400ms,box-shadow 400ms}
+.dim h3{margin:0;font:700 19px var(--f-disp);display:flex;justify-content:space-between;align-items:baseline}
+.dim h3 small{font:500 13px var(--f-cuerpo);color:var(--gris)}
+.dim[data-d="grado"]{border-left-color:var(--granate)}
+.dim[data-d="nivel"]{border-left-color:var(--verde)}
+.dim[data-d="modalidad"]{border-left-color:var(--pizarra)}
+.dim[data-d="regimen"]{border-left-color:var(--intensivo)}
+.dim.bloq{opacity:.45}
+.dim.activa{box-shadow:0 0 0 2px var(--ambar),0 8px 20px rgba(60,20,30,.10)}
+.opts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.opts button{font:600 14px var(--f-cuerpo);min-width:44px;border:1px solid var(--linea);background:var(--papel);color:var(--tinta);border-radius:6px;padding:7px 11px;cursor:pointer}
+.opts button[aria-pressed="true"]{color:#fff;border-color:transparent}
+.dim[data-d="grado"] .opts button[aria-pressed="true"]{background:var(--granate)}
+.dim[data-d="nivel"] .opts button[aria-pressed="true"]{background:var(--verde)}
+.dim[data-d="modalidad"] .opts button[aria-pressed="true"]{background:var(--pizarra)}
+.dim[data-d="regimen"] .opts button[aria-pressed="true"]{background:var(--intensivo)}
+.opts button:disabled{cursor:not-allowed}
+
+/* Ficha */
+.ficha{position:absolute;left:500px;top:24px;width:470px;background:var(--papel);border:1px solid var(--linea);border-radius:12px;box-shadow:0 10px 28px rgba(60,20,30,.10);overflow:hidden}
+.ficha .cab{padding:16px 18px 14px;background:var(--granate-claro);border-bottom:1px solid #EBCAD4}
+.ficha .tipo{font:600 12px var(--f-cuerpo);letter-spacing:.08em;text-transform:uppercase;color:var(--gris)}
+.ficha .nom{font:700 24px/1.12 var(--f-disp);margin-top:4px;text-wrap:balance}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.chip{font:600 13px var(--f-cuerpo);border-radius:999px;padding:4px 10px;color:#fff}
+.chip.g{background:var(--granate)} .chip.n{background:var(--verde)} .chip.m{background:var(--pizarra)} .chip.r{background:var(--intensivo)} .chip.r.np{background:var(--gris)}
+.filas{padding:6px 18px 12px}
+.fl{display:grid;grid-template-columns:150px 1fr;gap:10px;padding:9px 0;border-bottom:1px solid var(--linea);font-size:14px;line-height:1.4}
+.fl:last-child{border-bottom:0}
+.fl b{font-weight:600;color:var(--gris);font-size:13px}
+.fl span{transition:background 900ms}
+.fl.cambio span{background:#FFF0C7}
+.frase{margin:0 18px 14px;padding:10px 12px;border-radius:8px;background:var(--fondo);font-size:14px;line-height:1.45}
+.marcos{position:absolute;left:30px;width:440px;background:var(--papel);border:1px solid var(--linea);border-radius:10px;padding:10px 12px 8px}
+.marcos h4{margin:0 0 6px;font:700 15px var(--f-disp);display:flex;justify-content:space-between;align-items:baseline}
+.marcos h4 small{font:500 11.5px var(--f-cuerpo);color:var(--gris)}
+.mt{display:grid;grid-template-columns:96px repeat(8,1fr);gap:3px;font-size:12.5px}
+.mt div{padding:4px 0;text-align:center;border-radius:4px;background:var(--fondo);color:var(--gris);transition:background 400ms,color 400ms}
+.mt div.lab{background:none;text-align:left;font-weight:600;color:var(--tinta);padding-left:2px}
+.mt div.vac{background:none}
+.mt div.on{background:var(--verde);color:#fff;font-weight:700}
+.mt div.sub{background:var(--ambar);color:#fff;font-weight:700}
+.marcos .pie{font-size:11.5px;color:var(--gris);margin-top:6px;line-height:1.35}
+.aviso{position:absolute;left:500px;width:470px;padding:11px 14px;border-radius:8px;background:var(--ambar-claro);border-left:4px solid var(--ambar);font-size:13.5px;line-height:1.45;transition:opacity 400ms}
+.aviso b{color:var(--ambar)}
+.aviso:empty{opacity:0}
+
+/* Prueba */
+.sup{position:absolute;width:455px;background:var(--papel);border:1px solid var(--linea);border-radius:10px;padding:14px 16px}
+.sup .t{font:600 12px var(--f-cuerpo);letter-spacing:.08em;text-transform:uppercase;color:var(--gris)}
+.sup p{margin:6px 0 10px;font-size:15px;line-height:1.45}
+.sup button{font:600 13px var(--f-cuerpo);border:1px solid var(--granate);background:var(--papel);color:var(--granate);border-radius:6px;padding:6px 12px;cursor:pointer}
+.sol{display:none;margin-top:8px;font-size:13.5px;line-height:1.5}
+.sup.ver .sol{display:block}
+.sup.ver button{display:none}
+.sol .chips{margin:0 0 6px}
+.nota{position:absolute;left:30px;top:600px;font-size:12.5px;color:var(--gris)}
+
+@media (max-width:900px){
+  main{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  aside{border-right:0;border-bottom:1px solid var(--linea);padding:18px 16px}
+  aside h1{font-size:30px}
+  .marco{min-height:62vw}
+  header{padding:10px 16px}
+}
+@media (prefers-reduced-motion:reduce){*{transition-duration:1ms !important}}
+</style>
+</head>
+<body data-s="0">
+<header>
+  <a class="volver" href="../../index.html">← Colección</a>
+  <div class="marca">Temas 5 y 6 · Cuatro dimensiones de una oferta <span>· Caso guía: Técnico en Vídeo Disc-jockey y Sonido</span></div>
+  <nav class="puntos" aria-label="Escenas"></nav>
+</header>
+<main>
+  <aside aria-live="polite">
+    <div class="num" id="num">Escena 1 de 7</div>
+    <h1 id="tit"></h1>
+    <p class="pregunta" id="preg"></p>
+    <p class="cuerpo" id="cuerpo"></p>
+    <div class="ctl">
+      <button type="button" id="ant">← Anterior</button>
+      <button type="button" id="sig" class="prim">Siguiente →</button>
+    </div>
+    <div class="fuente" id="fuente"></div>
+  </aside>
+  <div class="marco" id="marco">
+    <div class="stage" id="stage">
+
+      <div class="obj" id="lab">
+        <div class="mandos">
+          <div class="dim" data-d="grado"><h3>Grado <small>¿qué amplitud?</small></h3><div class="opts" data-k="grado"><button type="button" data-v="A">A</button><button type="button" data-v="B">B</button><button type="button" data-v="C">C</button><button type="button" data-v="D">D</button><button type="button" data-v="E">E</button></div></div>
+          <div class="dim" data-d="nivel"><h3>Nivel <small>¿qué complejidad?</small></h3><div class="opts" data-k="nivel"><button type="button" data-v="1">1</button><button type="button" data-v="2">2</button><button type="button" data-v="3">3</button></div></div>
+          <div class="dim" data-d="modalidad"><h3>Modalidad <small>¿cómo se imparte?</small></h3><div class="opts" data-k="modalidad"><button type="button" data-v="presencial">Presencial</button><button type="button" data-v="semipresencial">Semipresencial</button><button type="button" data-v="virtual">Virtual</button></div></div>
+          <div class="dim" data-d="regimen"><h3>Régimen <small>¿cuánto en la empresa y con qué vínculo?</small></h3><div class="opts" data-k="regimen"><button type="button" data-v="general">General</button><button type="button" data-v="intensivo">Intensivo</button></div></div>
+        </div>
+        <div class="marcos" id="marcos">
+          <h4>Equivalencias entre marcos <small>RD 272/2022, anexo</small></h4>
+          <div class="mt" id="mt"></div>
+          <div class="pie" id="mpie"></div>
+        </div>
+        <div class="ficha" id="ficha">
+          <div class="cab"><div class="tipo" id="fTipo"></div><div class="nom" id="fNom"></div><div class="chips" id="fChips"></div></div>
+          <div class="filas">
+            <div class="fl" id="rCred"><b>Credencial</b><span></span></div>
+            <div class="fl" id="rMecu"><b>Niveles de marco</b><span></span></div>
+            <div class="fl" id="rEmp"><b>Formación en empresa</b><span></span></div>
+            <div class="fl" id="rMod"><b>Cómo se imparte</b><span></span></div>
+            <div class="fl" id="rCurr"><b>Quién fija el currículo</b><span></span></div>
+          </div>
+          <div class="frase" id="fFrase"></div>
+        </div>
+        <div class="aviso" id="aviso"></div>
+      </div>
+
+      <div class="obj" id="prueba">
+        <div class="sup" style="left:30px;top:24px"><div class="t">Supuesto 1</div><p>Ciclo de grado superior de Sonido para Audiovisuales y Espectáculos, presencial, con contrato de formación en alternancia.</p><button type="button">Ver la solución</button>
+          <div class="sol"><div class="chips"><span class="chip g">Grado D</span><span class="chip n">Nivel 3</span><span class="chip m">Presencial</span><span class="chip r">Intensivo</span></div>Título de Técnico Superior: MECU 5A, Marco Europeo 5, MECES 1. Lo que identifica el intensivo es el contrato de formación.</div></div>
+        <div class="sup" style="left:515px;top:24px"><div class="t">Supuesto 2</div><p>El módulo 1299, Captación y grabación de sonido, cursado suelto en modalidad virtual.</p><button type="button">Ver la solución</button>
+          <div class="sol"><div class="chips"><span class="chip g">Grado B</span><span class="chip n">Nivel 2</span><span class="chip m">Virtual</span><span class="chip r np">Régimen: no procede</span></div>Certificado de competencia, sin nivel asignado en el MECU ni, por tanto, en los otros marcos. En el grado B la formación en empresa no es obligatoria.</div></div>
+        <div class="sup" style="left:30px;top:300px"><div class="t">Supuesto 3</div><p>Curso de especialización en Audiodescripción y subtitulación.</p><button type="button">Ver la solución</button>
+          <div class="sol"><div class="chips"><span class="chip g">Grado E</span><span class="chip n">Nivel 3</span><span class="chip m">No se indica</span><span class="chip r np">Según la norma del curso</span></div>Título de Máster de Formación Profesional: MECU 5C, Marco Europeo 5, sin nivel MECES. No es un máster universitario (MECU 7, MECES 3). La formación en empresa es potestativa (LO 3/2022, art. 52.1).</div></div>
+        <div class="sup" style="left:515px;top:300px"><div class="t">Supuesto 4</div><p>Ciclo de grado medio de Vídeo Disc-jockey y Sonido, semipresencial, sin contrato y con una beca de la empresa.</p><button type="button">Ver la solución</button>
+          <div class="sol"><div class="chips"><span class="chip g">Grado D</span><span class="chip n">Nivel 2</span><span class="chip m">Semipresencial</span><span class="chip r">General</span></div>Título de Técnico: MECU 4A, Marco Europeo 4; no entra en el MECES. La beca no convierte el régimen en intensivo: sin contrato, es régimen general.</div></div>
+        <div class="nota">Supuestos para practicar: combinan ofertas reales de la familia de Imagen y Sonido con modalidades y regímenes hipotéticos.</div>
+      </div>
+
+    </div>
+  </div>
+</main>
+<script>
+(function(){
+  var $=function(i){return document.getElementById(i)};
+  var escenas=[
+    {t:"Una oferta, cuatro preguntas",p:"¿Cómo se describe una oferta sin confundirse?",c:"Cualquier oferta del sistema se describe con cuatro dimensiones independientes: el grado (qué amplitud tiene), el nivel (qué complejidad), la modalidad (cómo se imparte) y el régimen (cuánto se aprende en la empresa y con qué vínculo). La ficha muestra el ciclo del caso guía.",f:"RD 659/2023, arts. 4, 24 a 27 y 159; RD 272/2022.",act:null},
+    {t:"Cambia solo el grado",p:"¿Qué pasa si la oferta es más pequeña?",c:"Pulsa los grados. Cambian la credencial y su nivel en el Marco Español (MECU); el nivel de competencia sigue siendo 2. La tabla de equivalencias muestra cuándo una credencial no tiene nivel asignado. En los grados A y B la formación en empresa no es obligatoria, así que el régimen no procede.",f:"RD 659/2023, art. 4; RD 69/2025, art. 12; RD 209/2025; RD 272/2022, anexo; RD 1027/2011 (MECES).",act:"grado"},
+    {t:"Cambia solo el nivel",p:"¿Grado D es lo mismo que grado medio?",c:"No. Dentro del Grado D hay ciclos de grado básico, medio y superior: niveles 1, 2 y 3. Cambian el título y su nivel en el marco, pero la oferta sigue siendo de Grado D. Fíjate en la tabla: el nivel 2 de competencia es un MECU 4, y solo el Técnico Superior (5A) entra en el MECES, con el nivel 1.",f:"RD 659/2023, art. 4; RD 272/2022, arts. 4 y 5 y anexo; RD 1027/2011 (MECES).",act:"nivel"},
+    {t:"Cambia solo la modalidad",p:"¿Un ciclo virtual tiene formación en empresa?",c:"Sí. La modalidad dice cómo se imparte la formación del centro; no cambia el grado, el nivel ni el régimen. En virtual hay prueba final presencial y el centro debe estar autorizado para la misma oferta presencial.",f:"RD 659/2023, arts. 22 y 24 a 27.",act:"modalidad"},
+    {t:"Cambia solo el régimen",p:"¿Qué distingue el régimen intensivo?",c:"El contrato de formación. El régimen cambia cuánto se aprende en la empresa y con qué vínculo, no el título que se obtiene. Una beca no convierte el régimen general en intensivo.",f:"LO 3/2022, arts. 66 y 67; RD 659/2023, art. 159; Orden 204/2024 de Castilla-La Mancha.",act:"regimen"},
+    {t:"Laboratorio",p:"¿Qué oferta resulta de cada combinación?",c:"Combina las cuatro dimensiones. La ficha dice qué credencial se obtiene, su nivel en el MECU, en el Marco Europeo y en el MECES, si hay formación en empresa y quién fija el currículo, y avisa de las combinaciones que no existen.",f:"RD 659/2023, arts. 4, 7, 24 a 27 y 159; RD 69/2025, art. 12; RD 272/2022, arts. 4 y 5 y anexo; RD 1027/2011 (MECES); LO 3/2022, art. 52.1.",act:"todas"},
+    {t:"Ponte a prueba",p:"¿Sabes describir estas ofertas?",c:"Piensa las cuatro dimensiones de cada supuesto antes de ver la solución. Si una dimensión no aparece en el enunciado, la respuesta correcta es «no se indica».",f:"Claves basadas en RD 659/2023, RD 272/2022 y LO 3/2022, arts. 52.1, 66 y 67.",act:null}
+  ];
+  var BASE={grado:"D",nivel:"2",modalidad:"presencial",regimen:"general"};
+  var st=Object.assign({},BASE), s=0, prev={};
+  var nav=document.querySelector("nav.puntos");
+  escenas.forEach(function(e,i){var x=document.createElement("button");x.type="button";x.textContent=(i+1)+". "+e.t;x.addEventListener("click",function(){ir(i)});nav.appendChild(x)});
+
+  function oferta(o){
+    var g=o.grado,n=+o.nivel,r={};
+    var mecuL={A:null,B:null,C:"B",D:"A",E:"C"}[g];
+    r.mecu= mecuL? (n+2)+mecuL : "Sin nivel asignado en el anexo del RD 272/2022";
+    r.existe=!(g==="E"&&n===1);
+    var n1=["","grado básico","grado medio","grado superior"][n];
+    if(g==="A"){r.tipo="Grado A · nivel "+n;r.nom=(n===2)?"Acreditación parcial de un resultado del módulo 1298":"Acreditación parcial de competencia";r.cred="Acreditación parcial de competencia";}
+    if(g==="B"){r.tipo="Grado B · nivel "+n;r.nom=(n===2)?"Módulo 1298 suelto (IMS_B_1298)":"Un módulo profesional suelto";r.cred="Certificado de competencia";}
+    if(g==="C"){r.tipo="Grado C · nivel "+n;r.nom=(n===2)?"IMS_C_002_4B Operaciones de sonido":"Certificado profesional de nivel "+n;r.cred="Certificado profesional";}
+    if(g==="D"){r.tipo="Grado D · ciclo de "+n1;r.nom=(n===2)?"Técnico en Vídeo Disc-jockey y Sonido":(n===3?"Técnico Superior en Sonido para Audiovisuales y Espectáculos":"Un ciclo de grado básico");r.cred=["","Técnico Básico","Técnico","Técnico Superior"][n];}
+    if(g==="E"){r.tipo="Grado E · curso de especialización";r.nom=n===3?"Audiodescripción y subtitulación":(n===2?"Curso de especialización de grado medio":"No existe");r.cred=n===3?"Máster de Formación Profesional":(n===2?"Especialista":"—");}
+    // formación en empresa y régimen
+    if(g==="A"||g==="B"){r.emp="No obligatoria: el régimen no procede.";r.reg="np";}
+    else if(g==="E"){r.emp="Potestativa: la incluye o no la norma de cada curso (LO 3/2022, art. 52.1).";r.reg="curso";}
+    else{
+      r.reg=o.regimen;
+      r.emp= o.regimen==="general" ? "Dual. Régimen general: 25–35 % del tiempo en la empresa, sin contrato; puede haber beca." : "Dual. Régimen intensivo: 35–50 % del tiempo en la empresa, con contrato de formación en alternancia.";
+    }
+    r.mod={presencial:"Presencial, en el centro.",semipresencial:"Parte en el centro y parte en línea, con seguimiento en plataforma y prueba final presencial.",virtual:"En línea, con prueba final presencial. La matrícula permanece abierta y el centro debe estar autorizado para la misma oferta presencial."}[o.modalidad];
+    r.curr=(g==="A"||g==="B"||g==="C")?"El ministerio (en B y C puede añadirse hasta un 25 %).":"El Estado fija el currículo básico y la comunidad autónoma lo completa (añadidos hasta el 10 %).";
+    // avisos
+    r.aviso="";
+    if(!r.existe) r.aviso="<b>Esta combinación no existe.</b> Los cursos de especialización son de nivel 2 o 3.";
+    else if(g==="D"&&n===1&&o.regimen==="intensivo") r.aviso="<b>Grado básico:</b> el régimen general es el habitual, desde el 20 % en la empresa; el intensivo solo si lo autoriza la administración.";
+    else if(g==="C"&&n===1&&o.regimen==="intensivo") r.aviso="<b>Certificado de nivel 1:</b> el régimen general es el habitual; el intensivo solo si lo autoriza la administración.";
+    else if((g==="C"||g==="D")&&o.regimen==="intensivo") r.aviso="<b>En Castilla-La Mancha</b> el régimen general es el ordinario; el intensivo es excepcional y permite organizar el ciclo en tres cursos.";
+    else if(g==="A"||g==="B") r.aviso="<b>Régimen «no procede»:</b> el selector de régimen no cambia nada en los grados A y B.";
+    return r;
+  }
+  function frase(o,r){
+    if(!r.existe) return "Combinación imposible: no hay cursos de especialización de nivel 1.";
+    var mod=o.modalidad, reg = r.reg==="np"?"sin formación en empresa obligatoria":(r.reg==="curso"?"con la formación en empresa que fije su norma":"en régimen "+o.regimen);
+    return "Oferta de grado "+o.grado+", nivel "+o.nivel+", modalidad "+mod+", "+reg+". Se obtiene: "+r.cred+(r.mecu.indexOf("Sin")===0?", sin nivel MECU.":" ("+r.mecu+").");
+  }
+  function pintarMarcos(o,r){
+    var g=o.grado,n=+o.nivel,L=null,sub=null;
+    if(r.existe&&r.mecu.indexOf("Sin")!==0){L=+r.mecu.charAt(0);sub=r.mecu.charAt(1);}
+    var filas=[
+      ["Nivel FP (1–3)",["","","1","2","3","","",""]],
+      ["MECU",["1","2","3","4","5","6","7","8"]],
+      ["Marco Europeo",["1","2","3","4","5","6","7","8"]],
+      ["MECES",["","","","","1*","2","3","4"]]
+    ];
+    var h="";
+    filas.forEach(function(f,fi){
+      h+='<div class="lab">'+f[0]+'</div>';
+      f[1].forEach(function(v,i){
+        var col=i+1,cls=v===""?"vac":"",txt=v;
+        if(fi===1&&col===L){txt=L+sub;cls="sub";}
+        else if(col===L&&v!==""){
+          if(fi===3&&!(L===5&&sub==="A")) cls="";
+          else cls="on";
+        }
+        h+='<div class="'+cls+'">'+txt+'</div>';
+      });
+    });
+    $("mt").innerHTML=h;
+    var pie;
+    if(L===null) pie=r.existe?"Esta credencial no tiene nivel asignado en el anexo, así que no se sitúa en ningún marco.":"Combinación imposible.";
+    else if(L<5) pie="MECU "+L+sub+" equivale al nivel "+L+" del Marco Europeo. El MECES solo recoge la educación superior, desde el nivel 5.";
+    else if(sub==="A") pie="MECU 5A equivale al nivel 5 del Marco Europeo y al nivel 1 del MECES: el Técnico Superior forma parte de la educación superior.";
+    else pie="MECU 5"+sub+" equivale al nivel 5 del Marco Europeo, pero no tiene nivel MECES: solo el 5A lo tiene"+(sub==="C"?". El Máster de FP no equivale al máster universitario (MECU 7, MECES 3).":".");
+    $("mpie").innerHTML="* Solo el subnivel 5A. "+pie;
+  }
+  function pintarFicha(){
+    var r=oferta(st);
+    $("fTipo").textContent=r.tipo; $("fNom").textContent=r.nom;
+    var rc = r.reg==="np"?'<span class="chip r np">Régimen: no procede</span>':(r.reg==="curso"?'<span class="chip r np">Régimen: según el curso</span>':'<span class="chip r">'+(st.regimen==="general"?"General":"Intensivo")+'</span>');
+    $("fChips").innerHTML='<span class="chip g">Grado '+st.grado+'</span><span class="chip n">Nivel '+st.nivel+'</span><span class="chip m">'+st.modalidad.charAt(0).toUpperCase()+st.modalidad.slice(1)+'</span>'+rc;
+    var mt=r.mecu;
+    if(r.existe&&r.mecu.indexOf("Sin")!==0){var L=r.mecu.charAt(0),sb=r.mecu.charAt(1);mt="MECU "+r.mecu+" · Marco Europeo "+L+" · "+(L==="5"&&sb==="A"?"MECES 1":(L==="5"?"sin nivel MECES":"MECES: no se aplica"));}
+    else if(!r.existe) mt="—";
+    var vals={rCred:r.cred,rMecu:mt,rEmp:r.emp,rMod:r.mod,rCurr:r.curr};
+    Object.keys(vals).forEach(function(k){var el=$(k),sp=el.querySelector("span");if(prev[k]!==undefined&&prev[k]!==vals[k]){el.classList.remove("cambio");void el.offsetWidth;el.classList.add("cambio");setTimeout(function(){el.classList.remove("cambio")},1200)}sp.textContent=vals[k];prev[k]=vals[k]});
+    $("fFrase").textContent=frase(st,r);
+    $("aviso").innerHTML=r.aviso; pintarMarcos(st,r);
+    var mh=document.querySelector(".mandos").offsetHeight; $("marcos").style.top=(24+mh+12)+"px";
+    var h=$("ficha").offsetHeight; $("aviso").style.top=(24+h+12)+"px";
+    document.querySelectorAll(".opts").forEach(function(op){var k=op.getAttribute("data-k");op.querySelectorAll("button").forEach(function(b){b.setAttribute("aria-pressed",b.getAttribute("data-v")===st[k]?"true":"false")})});
+  }
+  document.querySelectorAll(".opts").forEach(function(op){
+    var k=op.getAttribute("data-k");
+    op.querySelectorAll("button").forEach(function(b){b.addEventListener("click",function(){st[k]=b.getAttribute("data-v");pintarFicha()})});
+  });
+  document.querySelectorAll(".sup button").forEach(function(b){b.addEventListener("click",function(){b.closest(".sup").classList.add("ver")})});
+
+  function pintar(){
+    var e=escenas[s]; document.body.setAttribute("data-s",s);
+    $("num").textContent="Escena "+(s+1)+" de "+escenas.length;
+    $("tit").textContent=e.t;$("preg").textContent=e.p;$("cuerpo").textContent=e.c;$("fuente").textContent="Fuente: "+e.f;
+    $("ant").disabled=s===0;$("sig").disabled=s===escenas.length-1;
+    nav.querySelectorAll("button").forEach(function(x,i){if(i===s)x.setAttribute("aria-current","step");else x.removeAttribute("aria-current")});
+    document.querySelectorAll(".dim").forEach(function(d){
+      var k=d.getAttribute("data-d"), on=(e.act==="todas"||e.act===k);
+      d.classList.toggle("bloq",!on&&e.act!==null); d.classList.toggle("activa",on&&e.act!=="todas");
+      d.querySelectorAll("button").forEach(function(b){b.disabled=!on});
+    });
+    st=Object.assign({},BASE); prev={}; pintarFicha();
+    if(s===6) document.querySelectorAll(".sup").forEach(function(x){x.classList.remove("ver")});
+  }
+  function ir(n){s=Math.max(0,Math.min(escenas.length-1,n));pintar()}
+  $("sig").addEventListener("click",function(){ir(s+1)});
+  $("ant").addEventListener("click",function(){ir(s-1)});
+  document.addEventListener("keydown",function(ev){
+    if(ev.key==="ArrowRight"||ev.key==="PageDown"){ev.preventDefault();ir(s+1)}
+    else if(ev.key==="ArrowLeft"||ev.key==="PageUp"){ev.preventDefault();ir(s-1)}
+    else if(ev.key==="f"||ev.key==="F"){try{if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(function(){})}else{document.exitFullscreen()}}catch(e){}}
+  });
+  function escalar(){var m=$("marco"),stg=$("stage"),w=m.clientWidth,h=m.clientHeight;if(!w||!h)return;var k=Math.min(w/1000,h/640)*.96;stg.style.transform="translate("+((w-1000*k)/2)+"px,"+((h-640*k)/2)+"px) scale("+k+")"}
+  window.addEventListener("resize",escalar);if(window.ResizeObserver)new ResizeObserver(escalar).observe($("marco"));
+  pintar();escalar();
+})();
+</script>
+</body>
+</html>
