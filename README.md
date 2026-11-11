@@ -14,6 +14,7 @@ Todas siguen el mismo caso guía: el ciclo de grado medio de Técnico en Vídeo 
 | 5 y 6 | Del trabajo a la credencial | `tema5-6/del-trabajo-a-la-credencial/` |
 | 5 y 6 | Grado, nivel, modalidad y régimen | `tema5-6/cuatro-dimensiones/` |
 | 5 y 6 | Las cifras de la formación en empresa | `tema5-6/cifras-formacion-empresa/` |
+| 5 y 6 | El caso de Dani: ACREDITA paso a paso | `tema5-6/caso-dani/` |
 
 La página de inicio (`index.html`) enlaza todos los recursos.
 
