@@ -62,6 +62,21 @@ aside h1{font-family:var(--f-disp);font-weight:700;font-size:38px;line-height:1.
 @media (prefers-reduced-motion:reduce){*{transition-duration:1ms !important;animation:none !important}}
 
 
+.roles{display:grid;grid-template-columns:300px 1fr;gap:10px;margin-top:8px}
+.rolbox{background:var(--papel);border:1px solid var(--linea);border-radius:10px;padding:10px 13px;font-size:12.8px;line-height:1.45;min-height:380px}
+.rolbox h4{margin:2px 0 4px;font:700 16px var(--f-disp);color:var(--granate)}
+.rolbox ol{margin:4px 0 6px;padding-left:18px}
+.rolbox li{margin-bottom:3px}
+.crit{background:var(--papel);border:1px solid var(--linea);border-radius:10px;padding:10px 13px;font-size:12.8px}
+.crit table{width:100%;border-collapse:collapse}
+.crit td,.crit th{border-bottom:1px solid var(--linea);padding:5px 4px;text-align:left;vertical-align:middle}
+.crit th{font:700 12.5px var(--f-disp);background:#EFEAEC}
+.crit select{font:13px var(--f-cuerpo);padding:2px 4px}
+.crit .ver{margin-top:8px;border-radius:8px;padding:8px 11px;font-size:13.5px;line-height:1.45}
+.crit .ver.ok{background:var(--verde-claro);border-left:4px solid var(--verde)}
+.crit .ver.no{background:var(--rojo-claro);border-left:4px solid var(--rojo)}
+.inc{background:var(--clm-claro);border-left:4px solid var(--clm);border-radius:8px;padding:7px 11px;font-size:12.8px;line-height:1.45}
+
 .expd{position:absolute;left:752px;top:14px;width:236px;height:612px;background:var(--papel);border:1px solid var(--linea);border-radius:12px;padding:12px 14px;font-size:12.5px;line-height:1.4;overflow:hidden}
 .expd h3{margin:0 0 2px;font:700 17px var(--f-disp);color:var(--granate)}
 .expd .sub{color:var(--gris);font-size:11.5px;margin-bottom:8px}
@@ -283,7 +298,38 @@ aside h1{font-family:var(--f-disp);font-weight:700;font-size:38px;line-height:1.
         </div>
       </div>
 
+
       <div class="obj" data-e="5">
+        <div class="zona">
+          <div class="card" style="padding:8px 14px;font-size:13px;line-height:1.45">
+            <b>Situación profesional de evaluación 1 (estándar 1402_2).</b> Montar, colocar y conectar el sonido de un concierto en directo a partir de los proyectos técnico y artístico: preparar materiales y protección individual, seleccionar el cableado, montar y conectar. Equipamiento mínimo de cajas, subgraves, monitores, rack con splitters, etapas, procesadores, ecualizadores y mesa; <b>al menos una incidencia imprevista</b>; el tiempo de un profesional.
+          </div>
+          <div class="roles">
+            <div>
+              <span class="seg" id="segR" style="margin-bottom:6px">
+                <button type="button" data-r="0" aria-pressed="true">Asesor</button>
+                <button type="button" data-r="1" aria-pressed="false">Evaluador</button>
+                <button type="button" data-r="2" aria-pressed="false">Especialista</button>
+              </span>
+              <div class="rolbox" id="rolbox" style="margin-top:6px"></div>
+            </div>
+            <div class="crit">
+              <div class="inc" id="inc"><b>Incidencia:</b> a mitad del montaje, un canal de monitores no da señal.</div>
+              <table style="margin-top:6px">
+                <tr><th>Criterio de mérito</th><th>Umbral</th><th>Dani</th></tr>
+                <tr><td>Rigor en la preparación de equipos y herramientas</td><td>Nivel 4 de 5</td><td><select data-c="0"><option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option></select></td></tr>
+                <tr><td>Exactitud en la selección del cableado</td><td>Nivel 4 de 5</td><td><select data-c="1"><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option></select></td></tr>
+                <tr><td>Precisión en el montaje y conexionado</td><td>Nivel 4 de 5</td><td><select data-c="2"><option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option></select></td></tr>
+                <tr><td>Eficacia en la comprobación y ajuste de señales</td><td>100 %</td><td><select data-c="3"><option value="1" selected>Cumple</option><option value="0">No cumple</option></select></td></tr>
+                <tr><td>Normas de seguridad personal, de instalaciones y equipos</td><td>100 %</td><td><select data-c="4"><option value="1" selected>Cumple</option><option value="0">No cumple</option></select></td></tr>
+              </table>
+              <div class="ver" id="verG"></div>
+              <div style="margin-top:8px"><button type="button" class="bt prim" id="aplG">Llevar este resultado al expediente</button> <span class="mut" id="aplMsg"></span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="obj" data-e="6">
         <div class="zona">
           <div id="nl5"></div>
           <div class="card" id="res5" style="font-size:14px;line-height:1.5"></div>
@@ -294,7 +340,7 @@ aside h1{font-family:var(--f-disp);font-weight:700;font-size:38px;line-height:1.
         </div>
       </div>
 
-      <div class="obj" data-e="6">
+      <div class="obj" data-e="7">
         <div class="zona">
           <div id="nl6"></div>
           <div class="card" style="padding:8px 14px">
@@ -312,7 +358,7 @@ aside h1{font-family:var(--f-disp);font-weight:700;font-size:38px;line-height:1.
         </div>
       </div>
 
-      <div class="obj" data-e="7">
+      <div class="obj" data-e="8">
         <div class="zona">
           <div class="card" style="padding:8px 10px">
             <table class="mat" id="mat"></table>
@@ -326,7 +372,7 @@ aside h1{font-family:var(--f-disp);font-weight:700;font-size:38px;line-height:1.
 </main>
 <script>
 (function(){
-  var ESC=[{"t": "La pregunta", "p": "«¿Me podéis dar ya el título?»", "c": "Dani tiene 31 años y lleva seis montando equipos de sonido como autónomo y pinchando en salas. Vive en Cuenca. Elige la respuesta que darías en la primera consulta y mira qué ocurre con el expediente en cada fase.", "f": "Real Decreto 556/2012 (título de Técnico en Vídeo Disc-jockey y Sonido); Real Decreto 659/2023, art. 181."}, {"t": "Orientación", "p": "¿Puede entrar en el procedimiento?", "c": "Comprueba los requisitos. Los estándares que busca son de nivel 2. Cambia la edad y la situación de sus horas para ver qué variantes aparecen.", "f": "Real Decreto 659/2023, arts. 177 y 181; Ley Orgánica 3/2022, arts. 90 a 93."}, {"t": "Inscripción en ACREDITA", "p": "¿Dónde y cómo presenta la solicitud?", "c": "En Castilla-La Mancha el procedimiento se llama ACREDITA. La solicitud se presenta en cualquier momento y sin tasa. Compara las sedes de las familias de servicios.", "f": "Instrucciones conjuntas de ACREDITA, Castilla-La Mancha, 2026-2027; Ley 1/2026, de 26 de marzo; RD 659/2023, art. 182."}, {"t": "Asesoramiento", "p": "¿Qué estándares pide y qué dice el asesor?", "c": "Marca los estándares que solicita y el sentido del informe de cada uno. El informe es orientativo: Dani decide si pasa a evaluación.", "f": "RD 659/2023, art. 184; instrucciones de ACREDITA 2026-2027 (mes y medio, primer contacto en 15 días, plataforma TRAMITA)."}, {"t": "Evaluación", "p": "¿Demuestra cada estándar?", "c": "El evaluador, distinto del asesor, valora primero las evidencias y, si no bastan, plantea una evaluación directa con la guía de evidencia. Marca el resultado de cada estándar.", "f": "RD 659/2023, art. 185; guía de evidencia del estándar 1402_2 (INCUAL); instrucciones de ACREDITA 2026-2027."}, {"t": "Acreditación y registro", "p": "¿Qué obtiene Dani?", "c": "La administración acredita cada estándar demostrado, lo inscribe en el registro y le propone un itinerario formativo, acredite todo, parte o nada.", "f": "RD 659/2023, arts. 80 y 186; instrucciones de ACREDITA 2026-2027."}, {"t": "Después, en el centro", "p": "¿Qué le falta para el título?", "c": "Las convalidaciones se calculan con el anexo V A) del título. Comprueba qué módulos convalida según lo acreditado y qué ocurre si no tiene el requisito de acceso al grado medio.", "f": "RD 556/2012, anexo V A); RD 659/2023, arts. 128 y 131; Orden 201/2024 de Castilla-La Mancha, modificada por la Orden 55/2026."}, {"t": "El docente en cada fase", "p": "¿Dónde aparece un docente de FP?", "c": "Ocho papeles posibles a lo largo del recorrido. Pulsa cada uno para ver en qué fases actúa, qué necesita y qué no puede hacer.", "f": "RD 659/2023, arts. 181 a 188; instrucciones de ACREDITA y de compensaciones, Castilla-La Mancha, 2026-2027."}];
+  var ESC=[{"t": "La pregunta", "p": "«¿Me podéis dar ya el título?»", "c": "Dani tiene 31 años y lleva seis montando equipos de sonido como autónomo y pinchando en salas. Vive en Cuenca. Elige la respuesta que darías en la primera consulta y mira qué ocurre con el expediente en cada fase.", "f": "Real Decreto 556/2012 (título de Técnico en Vídeo Disc-jockey y Sonido); Real Decreto 659/2023, art. 181."}, {"t": "Orientación", "p": "¿Puede entrar en el procedimiento?", "c": "Comprueba los requisitos. Los estándares que busca son de nivel 2. Cambia la edad y la situación de sus horas para ver qué variantes aparecen.", "f": "Real Decreto 659/2023, arts. 177 y 181; Ley Orgánica 3/2022, arts. 90 a 93."}, {"t": "Inscripción en ACREDITA", "p": "¿Dónde y cómo presenta la solicitud?", "c": "En Castilla-La Mancha el procedimiento se llama ACREDITA. La solicitud se presenta en cualquier momento y sin tasa. Compara las sedes de las familias de servicios.", "f": "Instrucciones conjuntas de ACREDITA, Castilla-La Mancha, 2026-2027; Ley 1/2026, de 26 de marzo; RD 659/2023, art. 182."}, {"t": "Asesoramiento", "p": "¿Qué estándares pide y qué dice el asesor?", "c": "Marca los estándares que solicita y el sentido del informe de cada uno. El informe es orientativo: Dani decide si pasa a evaluación.", "f": "RD 659/2023, art. 184; instrucciones de ACREDITA 2026-2027 (mes y medio, primer contacto en 15 días, plataforma TRAMITA)."}, {"t": "Evaluación", "p": "¿Demuestra cada estándar?", "c": "El evaluador, distinto del asesor, valora primero las evidencias y, si no bastan, plantea una evaluación directa con la guía de evidencia. Marca el resultado de cada estándar.", "f": "RD 659/2023, art. 185; guía de evidencia del estándar 1402_2 (INCUAL); instrucciones de ACREDITA 2026-2027."}, {"t": "La guía de evidencia en acción", "p": "¿Qué hacen con la guía el asesor, el evaluador y el especialista?", "c": "La guía del estándar 1402_2 propone la situación profesional 1: montar el sonido de un concierto con una incidencia imprevista y en el tiempo de un profesional. Elige un papel para ver cómo usa la guía y prueba la escala de criterios de mérito.", "f": "Guía de evidencia del estándar 1402_2 (INCUAL); RD 659/2023, arts. 184, 185 y 187; instrucciones de ACREDITA 2026-2027."}, {"t": "Acreditación y registro", "p": "¿Qué obtiene Dani?", "c": "La administración acredita cada estándar demostrado, lo inscribe en el registro y le propone un itinerario formativo, acredite todo, parte o nada.", "f": "RD 659/2023, arts. 80 y 186; instrucciones de ACREDITA 2026-2027."}, {"t": "Después, en el centro", "p": "¿Qué le falta para el título?", "c": "Las convalidaciones se calculan con el anexo V A) del título. Comprueba qué módulos convalida según lo acreditado y qué ocurre si no tiene el requisito de acceso al grado medio.", "f": "RD 556/2012, anexo V A); RD 659/2023, arts. 128 y 131; Orden 201/2024 de Castilla-La Mancha, modificada por la Orden 55/2026."}, {"t": "El docente en cada fase", "p": "¿Dónde aparece un docente de FP?", "c": "Ocho papeles posibles a lo largo del recorrido. Pulsa cada uno para ver en qué fases actúa, qué necesita y qué no puede hacer.", "f": "RD 659/2023, arts. 181 a 188; instrucciones de ACREDITA y de compensaciones, Castilla-La Mancha, 2026-2027."}];
   var $=function(i){return document.getElementById(i)};
 
   var X={r0:null,edad:31,h:"alta",fam:"IMS",acc:1,
@@ -468,7 +514,33 @@ aside h1{font-family:var(--f-disp);font-weight:700;font-size:38px;line-height:1.
     $("rolDet").innerHTML='<div class="h">'+r[0]+'</div><b>Qué necesita:</b> '+r[2]+'<br><b>Base:</b> '+r[3]+'<br><b style="color:var(--rojo)">No puede:</b> '+r[4]+'<div class="mut" style="margin-top:6px">En ACREDITA el profesorado actúa fuera de su jornada, con compensación por estándar y un máximo de 30 expedientes como asesor y 40 como evaluador.</div>';
     document.querySelectorAll("tr.rol").forEach(function(t){function f(){X.rol=+t.getAttribute("data-rol");p7()}t.addEventListener("click",f);t.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();f()}})});
   }
-  function todo(){p1();p2();p3();p4();p5();p6();p7();pintarExp()}
+
+  var RG=[
+   ["El asesor (docente habilitado)","¿Qué ha hecho Dani y cómo puede demostrarlo?",
+    ["Primer contacto en 15 días: vida laboral, historial y cuestionario de autoevaluación.","Cruza el cuestionario con la guía: montaje fuerte (situación 1), mantenimiento flojo (situación 2).","Ordena el dosier por especificaciones de la guía: facturas de bolos, riders, fotos y planos de escenarios, cartas de promotores, formación en prevención.","Emite dos informes orientativos: a Dani (qué reforzar) y al evaluador (qué está justificado). Si es desfavorable, indica formación y centros (art. 184.3)."],
+    "Juzgar si es competente, diseñar la prueba o evaluarle después (art. 187.2)."],
+   ["El evaluador (docente habilitado, distinto)","¿Está demostrado con los indicadores de calidad?",
+    ["Primera reunión sobre evidencias indirectas en 15 días: el dosier cubre preparación y montaje, pero no prueba señales ni seguridad, que exigen el 100 %.","Informe de valoración de evidencias indirectas.","Plan individualizado: evaluación directa con la situación 1, sus condiciones, una incidencia y el tiempo de un profesional.","Observa en el centro sede de Toledo con la escala de cada criterio y emite el informe de evaluación directa: «demostrado» o «no demostrado», firmado por ambos."],
+    "Inventar criterios, aprobar por la experiencia lo que no ha visto o decidir la acreditación."],
+   ["El asesor especialista","¿Cómo se observa con rigor?",
+    ["Prepara la situación: proyecto técnico y artístico, lista de equipos y la incidencia que se provocará.","Convierte los criterios de mérito en instrumentos: lista de cotejo para señales y seguridad, escala para el resto.","Acompaña la prueba si hace falta un perfil concreto, por ejemplo si se vuelan cajas y hay que valorar el rigging."],
+    "Firmar el resultado o sustituir al evaluador."]];
+  var rg=0;
+  document.querySelectorAll("#segR button").forEach(function(b){b.addEventListener("click",function(){rg=+b.getAttribute("data-r");
+    document.querySelectorAll("#segR button").forEach(function(o){o.setAttribute("aria-pressed",o===b?"true":"false")});pG()})});
+  document.querySelectorAll("[data-c]").forEach(function(x){x.addEventListener("change",function(){$("aplMsg").textContent="";pG()})});
+  function resG(){var v=[0,1,2].map(function(i){return +document.querySelector('[data-c="'+i+'"]').value});
+    var t=[3,4].map(function(i){return document.querySelector('[data-c="'+i+'"]').value==="1"});
+    var fall=[];["preparación","cableado","montaje"].forEach(function(n,i){if(v[i]<4)fall.push(n+" (nivel "+v[i]+")")});
+    if(!t[0])fall.push("comprobación de señales (exige el 100 %)"); if(!t[1])fall.push("seguridad (exige el 100 %)");
+    return fall;}
+  function pG(){var r=RG[rg];
+    $("rolbox").innerHTML='<h4>'+r[0]+'</h4><div class="mut" style="font-style:italic">'+r[1]+'</div><ol>'+r[2].map(function(x){return "<li>"+x+"</li>"}).join("")+'</ol><div style="background:var(--rojo-claro);border-left:4px solid var(--rojo);border-radius:6px;padding:6px 9px"><b style="color:var(--rojo)">No puede:</b> '+r[3]+'</div>';
+    var f=resG(), v=$("verG");
+    if(!f.length){v.className="ver ok";v.innerHTML="<b>Demostrado.</b> Todos los criterios con escala alcanzan el nivel 4 y los dos de cumplimiento total se cumplen.";}
+    else{v.className="ver no";v.innerHTML="<b>No demostrado.</b> Falla: "+f.join("; ")+". Un montaje excelente no compensa un criterio de cumplimiento total.";}}
+  $("aplG").addEventListener("click",function(){X.sol["1402"]=true;X.sig["1402"]=true;X.res["1402"]=resG().length?"nod":"dem";$("aplMsg").textContent="Hecho: mira el panel del expediente.";todo()});
+  function todo(){p1();p2();p3();p4();pG();p5();p6();p7();pintarExp()}
   window.alEntrar=function(){todo()};
 
 
