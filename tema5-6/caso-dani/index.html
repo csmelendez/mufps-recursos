@@ -44,7 +44,7 @@ aside h1{font-family:var(--f-disp);font-weight:700;font-size:38px;line-height:1.
 .ctl button:disabled{opacity:.35;cursor:default}
 .marco{position:relative;min-height:0;overflow:hidden}
 .stage{position:absolute;left:0;top:0;width:1000px;height:640px;transform-origin:0 0}
-.obj{position:absolute;left:0;top:0;width:1000px;height:640px;opacity:0;pointer-events:none;transition:opacity 500ms ease}
+.obj{position:absolute;left:0;top:0;width:1000px;height:640px;opacity:0;pointer-events:none;transition:opacity 500ms ease;overflow-y:auto}
 .obj.on{opacity:1;pointer-events:auto}
 .bt{font:600 13.5px var(--f-cuerpo);border:1px solid var(--granate);background:var(--papel);color:var(--granate);border-radius:6px;padding:6px 12px;cursor:pointer}
 .bt.prim{background:var(--granate);color:#fff}
@@ -570,7 +570,7 @@ aside h1{font-family:var(--f-disp);font-weight:700;font-size:38px;line-height:1.
     if(!f.length){v.className="ver ok";v.innerHTML="<b>Demostrado.</b> Todos los criterios con escala alcanzan el nivel 4 y los dos de cumplimiento total se cumplen.";}
     else{v.className="ver no";v.innerHTML="<b>No demostrado.</b> Falla: "+f.join("; ")+". Los criterios no se compensan entre sí: cada uno debe alcanzar su umbral.";}}
   $("aplG").addEventListener("click",function(){X.sol["1402"]=true;X.sig["1402"]=true;X.res["1402"]=resG().length?"nod":"dem";$("aplMsg").textContent="Hecho: mira el panel del expediente.";todo()});
-  function todo(){p1();p2();p3();p4();pG();p5();p6();p7();pintarExp()}
+  function todo(){p1();p2();p3();p4();pG();p5();p6();p7();pintarExp();if(window.escalarStage)escalarStage()}
   window.alEntrar=function(){todo()};
 
 
@@ -585,6 +585,7 @@ aside h1{font-family:var(--f-disp);font-weight:700;font-size:38px;line-height:1.
     nav.querySelectorAll("button").forEach(function(x,i){if(i===s)x.setAttribute("aria-current","step");else x.removeAttribute("aria-current")});
     document.querySelectorAll(".obj").forEach(function(o){o.classList.toggle("on",o.getAttribute("data-e")===String(s))});
     if(window.alEntrar)alEntrar(s);
+    if(window.escalarStage)escalarStage();
   }
   function ir(n){s=Math.max(0,Math.min(ESC.length-1,n));pintar()}
   $("sig").addEventListener("click",function(){ir(s+1)});
@@ -596,7 +597,8 @@ aside h1{font-family:var(--f-disp);font-weight:700;font-size:38px;line-height:1.
     else if(ev.key==="ArrowLeft"||ev.key==="PageUp"){ev.preventDefault();ir(s-1)}
     else if(ev.key==="f"||ev.key==="F"){try{if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(function(){})}else{document.exitFullscreen()}}catch(e){}}
   });
-  function escalar(){var m=$("marco"),stg=$("stage"),w=m.clientWidth,h=m.clientHeight;if(!w||!h)return;var k=Math.min(w/1000,h/640)*.96;stg.style.transform="translate("+((w-1000*k)/2)+"px,"+((h-640*k)/2)+"px) scale("+k+")"}
+  function escalar(){var m=$("marco"),stg=$("stage"),w=m.clientWidth,h=m.clientHeight;if(!w||!h)return;var H=640,o=document.querySelector(".obj.on");if(o){var b=0;for(var q=0;q<o.children.length;q++){var c=o.children[q];b=Math.max(b,c.offsetTop+c.offsetHeight)}H=Math.max(640,b+14);o.style.height=H+"px";}stg.style.height=H+"px";var k=Math.min(w/1000,h/H)*.96;stg.style.transform="translate("+((w-1000*k)/2)+"px,"+((h-H*k)/2)+"px) scale("+k+")"}
+  window.escalarStage=escalar;if(window.ResizeObserver){var ro=new ResizeObserver(function(){escalar()});document.querySelectorAll(".obj > *").forEach(function(z){ro.observe(z)})}if(document.fonts&&document.fonts.ready)document.fonts.ready.then(escalar);
   window.addEventListener("resize",escalar);if(window.ResizeObserver)new ResizeObserver(escalar).observe($("marco"));
   pintar();escalar();
 
