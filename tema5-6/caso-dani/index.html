@@ -62,6 +62,12 @@ aside h1{font-family:var(--f-disp);font-weight:700;font-size:38px;line-height:1.
 @media (prefers-reduced-motion:reduce){*{transition-duration:1ms !important;animation:none !important}}
 
 
+.esc{margin-top:6px;font-size:12px;line-height:1.35}
+.esc .lv{padding:3px 6px;border-radius:5px;margin-top:2px;border:1px solid transparent}
+.esc .lv.um{border-color:var(--granate)}
+.esc .lv.sel{background:var(--granate-claro)}
+.esc .lv b{color:var(--granate);margin-right:4px}
+
 .roles{display:grid;grid-template-columns:300px 1fr;gap:10px;margin-top:8px}
 .rolbox{background:var(--papel);border:1px solid var(--linea);border-radius:10px;padding:10px 13px;font-size:12.8px;line-height:1.45;min-height:380px}
 .rolbox h4{margin:2px 0 4px;font:700 16px var(--f-disp);color:var(--granate)}
@@ -529,14 +535,28 @@ aside h1{font-family:var(--f-disp);font-weight:700;font-size:38px;line-height:1.
   var rg=0;
   document.querySelectorAll("#segR button").forEach(function(b){b.addEventListener("click",function(){rg=+b.getAttribute("data-r");
     document.querySelectorAll("#segR button").forEach(function(o){o.setAttribute("aria-pressed",o===b?"true":"false")});pG()})});
-  document.querySelectorAll("[data-c]").forEach(function(x){x.addEventListener("change",function(){$("aplMsg").textContent="";pG()})});
+  var act=0;
+  var DESC=[
+   ["Escala A · Rigor en la preparación",["No sigue el procedimiento; documentación, secuencia, herramientas y ubicación de altavoces deficientes.","Como el 3, pero descuida la ubicación de los altavoces dentro y fuera del escenario.","Herramientas adecuadas y ubicación correcta, pero escaso dominio de la documentación y sin secuencia ordenada.","Sigue el procedimiento, interpreta con competencia la documentación, secuencia correcta, herramientas adecuadas y ubica bien altavoces y control.","Como el 4, pero con dominio de la documentación técnica."]],
+   ["Escala B · Exactitud en el cableado",["Desordenado, sin seguir el esquema y sin separar audio y alimentación.","Distribuido y marcado, pero sin orden claro y sin separar audio y alimentación.","Ordenado y marcado, pero no separa el cable de audio del de alimentación.","Ordenado, marcado y con audio y alimentación separados, aunque descuida dobleces y tensiones.","Ordenado y metódico, según esquema, líneas marcadas, sin dobleces ni tensiones y con audio y alimentación separados."]],
+   ["Escala C · Precisión en el montaje",["Conexiones parciales, sin asignar canales, buses ni grabación.","No sigue instrucciones ni documentación; asigna canales sin criterio y descuida la orientación.","Conexiones completas y asignaciones correctas, pero no atiende las contingencias y descuida la orientación de altavoces.","Sigue instrucciones y documentación, resuelve las contingencias y asigna bien canales y buses, aunque sin orden en las conexiones ni cuidar la orientación.","Como el 4, con conexiones ordenadas y altavoces bien orientados."]],
+   ["Cumplimiento total · Comprobación de señales",["Exige cumplir todos los indicadores: secuencia de encendido y apagado, verificación de altavoces con instrumentos, comprobación de todas las fuentes en las mesas, configuración de control y grabación, y consumo eléctrico total. Un solo fallo y el criterio no se cumple."]],
+   ["Cumplimiento total · Seguridad",["Exige cumplir todas las normas de seguridad personal, de las instalaciones y de los equipos. No hay niveles: se cumple o no se cumple."]]];
+  function pDesc(){var d=DESC[act];
+    if(d[1].length===1)return '<div class="esc"><b>'+d[0]+'</b><div style="margin-top:4px">'+d[1][0]+'</div></div>';
+    var sel=+document.querySelector('[data-c="'+act+'"]').value;
+    return '<div class="esc"><b>'+d[0]+'</b> <span class="mut">(síntesis de la guía; umbral, nivel 4)</span>'+[5,4,3,2,1].map(function(n){return '<div class="lv'+(n===sel?" sel":"")+(n===4?" um":"")+'"><b>'+n+(n===4?" · umbral":"")+'</b> '+d[1][n-1]+'</div>'}).join("")+'</div>';}
+  document.querySelectorAll("[data-c]").forEach(function(x){
+    x.addEventListener("change",function(){act=+x.getAttribute("data-c");$("aplMsg").textContent="";pG()});
+    x.addEventListener("focus",function(){act=+x.getAttribute("data-c");pG()});});
   function resG(){var v=[0,1,2].map(function(i){return +document.querySelector('[data-c="'+i+'"]').value});
     var t=[3,4].map(function(i){return document.querySelector('[data-c="'+i+'"]').value==="1"});
     var fall=[];["preparación","cableado","montaje"].forEach(function(n,i){if(v[i]<4)fall.push(n+" (nivel "+v[i]+")")});
     if(!t[0])fall.push("comprobación de señales (exige el 100 %)"); if(!t[1])fall.push("seguridad (exige el 100 %)");
     return fall;}
   function pG(){var r=RG[rg];
-    $("rolbox").innerHTML='<h4>'+r[0]+'</h4><div class="mut" style="font-style:italic">'+r[1]+'</div><ol>'+r[2].map(function(x){return "<li>"+x+"</li>"}).join("")+'</ol><div style="background:var(--rojo-claro);border-left:4px solid var(--rojo);border-radius:6px;padding:6px 9px"><b style="color:var(--rojo)">No puede:</b> '+r[3]+'</div>';
+    if(rg===1){$("rolbox").innerHTML='<h4>'+r[0]+'</h4><div class="mut" style="font-style:italic">Antes de la prueba: informe de evidencias indirectas y plan individualizado. Durante la prueba elige en cada escala la descripción que mejor encaja con lo que ve; después emite el informe de evaluación directa. Pulsa un criterio para ver sus niveles.</div>'+pDesc()+'<div style="background:var(--rojo-claro);border-left:4px solid var(--rojo);border-radius:6px;padding:5px 9px;margin-top:6px"><b style="color:var(--rojo)">No puede:</b> '+r[3]+'</div>';}
+    else $("rolbox").innerHTML='<h4>'+r[0]+'</h4><div class="mut" style="font-style:italic">'+r[1]+'</div><ol>'+r[2].map(function(x){return "<li>"+x+"</li>"}).join("")+'</ol><div style="background:var(--rojo-claro);border-left:4px solid var(--rojo);border-radius:6px;padding:6px 9px"><b style="color:var(--rojo)">No puede:</b> '+r[3]+'</div>';
     var ev=(rg===1);
     document.querySelectorAll("[data-c]").forEach(function(x){x.disabled=!ev});
     $("aplBox").style.display=ev?"block":"none";
@@ -548,7 +568,7 @@ aside h1{font-family:var(--f-disp);font-weight:700;font-size:38px;line-height:1.
     if(!ev){v.className="ver";v.style.background="var(--fondo)";v.style.borderLeft="4px solid var(--linea)";v.innerHTML="El resultado solo existe cuando el evaluador ha observado la prueba. Selecciona <b>Evaluador</b> para verlo.";return;}
     v.style.background="";v.style.borderLeft="";
     if(!f.length){v.className="ver ok";v.innerHTML="<b>Demostrado.</b> Todos los criterios con escala alcanzan el nivel 4 y los dos de cumplimiento total se cumplen.";}
-    else{v.className="ver no";v.innerHTML="<b>No demostrado.</b> Falla: "+f.join("; ")+". Un montaje excelente no compensa un criterio de cumplimiento total.";}}
+    else{v.className="ver no";v.innerHTML="<b>No demostrado.</b> Falla: "+f.join("; ")+". Los criterios no se compensan entre sí: cada uno debe alcanzar su umbral.";}}
   $("aplG").addEventListener("click",function(){X.sol["1402"]=true;X.sig["1402"]=true;X.res["1402"]=resG().length?"nod":"dem";$("aplMsg").textContent="Hecho: mira el panel del expediente.";todo()});
   function todo(){p1();p2();p3();p4();pG();p5();p6();p7();pintarExp()}
   window.alEntrar=function(){todo()};
